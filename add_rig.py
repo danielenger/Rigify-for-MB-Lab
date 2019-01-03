@@ -158,7 +158,9 @@ class RigifyMetaRigForMBLab_OT_add_rig(bpy.types.Operator):
 
         meta_rig_bone_data = {} # store vectors for head, tail and roll for every meta bone -> "name of meta rig bone" : (head, tail, roll)
 
-        legacy_mode = True if bpy.context.preferences.addons['rigify'].preferences['legacy_mode'] == 1 else False
+        legacy_mode = False
+        if "legacy_mode" in bpy.context.preferences.addons['rigify'].preferences:
+            legacy_mode = True if bpy.context.preferences.addons['rigify'].preferences['legacy_mode'] == 1 else False
 
         # error handling: a rig needs to be active
         if not mblab_rig.type == 'ARMATURE':

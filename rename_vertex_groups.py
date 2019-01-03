@@ -152,7 +152,10 @@ mblab_bone_names = { # mblab_bone : DEF-metarig_bone - for rename only
 # add bone names from metarig_bone_names dict and add renamed to mblab_bone_names dict
 def update_mblab_bone_names():
 
-    legacy_mode = True if bpy.context.preferences.addons['rigify'].preferences['legacy_mode'] == 1 else False
+    legacy_mode = False
+    if "legacy_mode" in bpy.context.preferences.addons['rigify'].preferences:
+        legacy_mode = True if bpy.context.preferences.addons['rigify'].preferences['legacy_mode'] == 1 else False
+
 
     if legacy_mode:
         for metarig_bone, mblab_bone in metarig_bone_names_legacy_mode.items():
