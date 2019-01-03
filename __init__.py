@@ -18,7 +18,7 @@ bl_info = {
     "name": "Rigify Meta-Rig for MB-Lab",
     "description": "Add a Rigify Meta-Rig for MB-Lab Characters",
     "author": "Daniel Engler",
-    "version": (0, 5, 0),
+    "version": (0, 5, 1),
     "blender": (2, 80, 0),
     "location": "View3D > Tools > MB-Lab",
     "category": "Characters",
