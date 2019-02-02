@@ -130,23 +130,25 @@ metarig_bone_names = { # metarig_bone : mblab_bone
 }
 
 mblab_bone_names = { # mblab_bone : DEF-metarig_bone - for rename only
-    "upperarm_twist_L":"DEF-upper_arm.01.L",
-    "upperarm_L":"DEF-upper_arm.02.L",
-    "lowerarm_twist_L":"DEF-forearm.01.L",
-    "lowerarm_L":"DEF-forearm.02.L",
-    "thigh_twist_L":"DEF-thigh.01.L",
-    "thigh_L":"DEF-thigh.02.L",
-    "calf_twist_L":"DEF-shin.01.L",
-    "calf_L":"DEF-shin.02.L",
+    "upperarm_twist_L": "DEF-upper_arm.L",
+    "upperarm_L":       "DEF-upper_arm.L.001",
+    "lowerarm_twist_L": "DEF-forearm.L",
+    "lowerarm_L":       "DEF-forearm.L.001",
 
-    "upperarm_twist_R":"DEF-upper_arm.01.R",
-    "upperarm_R":"DEF-upper_arm.02.R",
-    "lowerarm_twist_R":"DEF-forearm.01.R",
-    "lowerarm_R":"DEF-forearm.02.R",
-    "thigh_twist_R":"DEF-thigh.01.R",
-    "thigh_R":"DEF-thigh.02.R",
-    "calf_twist_R":"DEF-shin.01.R",
-    "calf_R":"DEF-shin.02.R",
+    "upperarm_twist_R": "DEF-upper_arm.R",
+    "upperarm_R":       "DEF-upper_arm.R.001",
+    "lowerarm_twist_R": "DEF-forearm.R",
+    "lowerarm_R":       "DEF-forearm.R.001",
+
+    "thigh_twist_L":"DEF-thigh.L",
+    "thigh_L":      "DEF-thigh.L.001",
+    "thigh_twist_R":"DEF-thigh.R",
+    "thigh_R":      "DEF-thigh.R.001",
+
+    "calf_twist_L": "DEF-shin.L.001",
+    "calf_twist_R": "DEF-shin.R.001",
+    "calf_L":       "DEF-shin.L",
+    "calf_R":       "DEF-shin.R",
 }
 
 # add bone names from metarig_bone_names dict and add renamed to mblab_bone_names dict
