@@ -151,17 +151,40 @@ mblab_bone_names = { # mblab_bone : DEF-metarig_bone - for rename only
     "calf_R":       "DEF-shin.R",
 }
 
+mblab_bone_names_legacy_mode = { # mblab_bone : DEF-metarig_bone - for rename only
+    "upperarm_twist_L":"DEF-upper_arm.01.L",
+    "upperarm_L":"DEF-upper_arm.02.L",
+    "lowerarm_twist_L":"DEF-forearm.01.L",
+    "lowerarm_L":"DEF-forearm.02.L",
+    "thigh_twist_L":"DEF-thigh.01.L",
+    "thigh_L":"DEF-thigh.02.L",
+    "calf_twist_L":"DEF-shin.01.L",
+    "calf_L":"DEF-shin.02.L",
+
+    "upperarm_twist_R":"DEF-upper_arm.01.R",
+    "upperarm_R":"DEF-upper_arm.02.R",
+    "lowerarm_twist_R":"DEF-forearm.01.R",
+    "lowerarm_R":"DEF-forearm.02.R",
+    "thigh_twist_R":"DEF-thigh.01.R",
+    "thigh_R":"DEF-thigh.02.R",
+    "calf_twist_R":"DEF-shin.01.R",
+    "calf_R":"DEF-shin.02.R",
+}
+
+def legacy_mode():
+    if "legacy_mode" in bpy.context.preferences.addons['rigify'].preferences:
+        if bpy.context.preferences.addons['rigify'].preferences['legacy_mode'] == 1:
+            return True
+        else:
+            return False
+
+
 # add bone names from metarig_bone_names dict and add renamed to mblab_bone_names dict
 def update_mblab_bone_names():
 
-    legacy_mode = False
-    if "legacy_mode" in bpy.context.preferences.addons['rigify'].preferences:
-        legacy_mode = True if bpy.context.preferences.addons['rigify'].preferences['legacy_mode'] == 1 else False
-
-
-    if legacy_mode:
+    if legacy_mode():
         for metarig_bone, mblab_bone in metarig_bone_names_legacy_mode.items():
-            mblab_bone_names[mblab_bone] = "DEF-" + metarig_bone
+            mblab_bone_names_legacy_mode[mblab_bone] = "DEF-" + metarig_bone
     else:
         for metarig_bone, mblab_bone in metarig_bone_names.items():
             mblab_bone_names[mblab_bone] = "DEF-" + metarig_bone
@@ -183,12 +206,20 @@ class RigifyMetaRigForMBLab_OT_rename_mblab_to_rigify(bpy.types.Operator):
             
         update_mblab_bone_names()
         # go through mblab_bone_names dictinary and try rename vertex groups
-        for mblab_bone, metarig_bone in mblab_bone_names.items():
-            try:
-                context.active_object.vertex_groups[mblab_bone].name = metarig_bone
-            except:
-                print("Error: '%s' could not be found in vertex groups" % mblab_bone)
-    
+        if legacy_mode():
+            print("LEGACY RENAME")
+            for mblab_bone, metarig_bone in mblab_bone_names_legacy_mode.items():
+                try:
+                    context.active_object.vertex_groups[mblab_bone].name = metarig_bone
+                except:
+                    print("Error: '%s' could not be found in vertex groups" % mblab_bone)
+        else:
+            for mblab_bone, metarig_bone in mblab_bone_names.items():
+                try:
+                    context.active_object.vertex_groups[mblab_bone].name = metarig_bone
+                except:
+                    print("Error: '%s' could not be found in vertex groups" % mblab_bone)
+        
         return {'FINISHED'}
 
 class RigifyMetaRigForMBLab_OT_rename_rigify_to_mblab(bpy.types.Operator):
@@ -207,10 +238,17 @@ class RigifyMetaRigForMBLab_OT_rename_rigify_to_mblab(bpy.types.Operator):
 
         update_mblab_bone_names()
         # go through mblab_bone_names dictinary and try rename vertex groups
-        for mblab_bone, metarig_bone in mblab_bone_names.items():
-            try:
-                context.active_object.vertex_groups[metarig_bone].name = mblab_bone
-            except:
-                print("Error: '%s' could not be found in vertex groups" % metarig_bone)
+        if legacy_mode():
+            for mblab_bone, metarig_bone in mblab_bone_names_legacy_mode.items():
+                try:
+                    context.active_object.vertex_groups[metarig_bone].name = mblab_bone
+                except:
+                    print("Error: '%s' could not be found in vertex groups" % metarig_bone)
+        else:
+            for mblab_bone, metarig_bone in mblab_bone_names.items():
+                try:
+                    context.active_object.vertex_groups[metarig_bone].name = mblab_bone
+                except:
+                    print("Error: '%s' could not be found in vertex groups" % metarig_bone)
         
         return {'FINISHED'}
