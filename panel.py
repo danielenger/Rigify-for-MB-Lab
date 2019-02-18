@@ -11,10 +11,13 @@ class RigifyMetaRigForMBLab_PT_panel(bpy.types.Panel):
     def draw(self, context):
         col = self.layout.column()
 
-        col.operator('object.rigify_meta_rig_for_mblab_add_rig')
-        col.operator('object.rigify_meta_rig_for_mblab_delete_face_rig')
+        if not "rigify" in bpy.context.preferences.addons.keys():
+            col.label(text="Enable Rigify add-on!")
+        else:
+            col.operator('object.rigify_meta_rig_for_mblab_add_rig')
+            col.operator('object.rigify_meta_rig_for_mblab_delete_face_rig')
 
-        box = self.layout.box()
-        box.label(text="Rename Vertex Groups:")
-        box.operator('object.rigify_meta_rig_for_mblab_rename_mblab_to_rigify')
-        box.operator('object.rigify_meta_rig_for_mblab_rename_rigify_to_mblab')
+            box = self.layout.box()
+            box.label(text="Rename Vertex Groups:")
+            box.operator('object.rigify_meta_rig_for_mblab_rename_mblab_to_rigify')
+            box.operator('object.rigify_meta_rig_for_mblab_rename_rigify_to_mblab')

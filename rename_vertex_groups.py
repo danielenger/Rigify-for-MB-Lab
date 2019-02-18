@@ -178,10 +178,7 @@ def legacy_mode():
         else:
             return False
 
-
-# add bone names from metarig_bone_names dict and add renamed to mblab_bone_names dict
 def update_mblab_bone_names():
-
     if legacy_mode():
         for metarig_bone, mblab_bone in metarig_bone_names_legacy_mode.items():
             mblab_bone_names_legacy_mode[mblab_bone] = "DEF-" + metarig_bone
@@ -207,7 +204,6 @@ class RigifyMetaRigForMBLab_OT_rename_mblab_to_rigify(bpy.types.Operator):
         update_mblab_bone_names()
         # go through mblab_bone_names dictinary and try rename vertex groups
         if legacy_mode():
-            print("LEGACY RENAME")
             for mblab_bone, metarig_bone in mblab_bone_names_legacy_mode.items():
                 try:
                     context.active_object.vertex_groups[mblab_bone].name = metarig_bone
