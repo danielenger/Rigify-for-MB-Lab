@@ -18,22 +18,22 @@ metarig_bone_names_legacy_mode = { # metarig_bone : mblab_bone
     "thumb.03.L":"thumb03_L",
 
     "palm.01.L":"index00_L",
-    "f_index.01.L.02":"index01_L",
+    "f_index.01.L":"index01_L",
     "f_index.02.L":"index02_L",
     "f_index.03.L":"index03_L",
 
     "palm.02.L":"middle00_L",
-    "f_middle.01.L.02":"middle01_L",
+    "f_middle.01.L":"middle01_L",
     "f_middle.02.L":"middle02_L",
     "f_middle.03.L":"middle03_L",
 
     "palm.03.L":"ring00_L",
-    "f_ring.01.L.02":"ring01_L",
+    "f_ring.01.L":"ring01_L",
     "f_ring.02.L":"ring02_L",
     "f_ring.03.L":"ring03_L",
 
     "palm.04.L":"pinky00_L",
-    "f_pinky.01.L.02":"pinky01_L",
+    "f_pinky.01.L":"pinky01_L",
     "f_pinky.02.L":"pinky02_L",
     "f_pinky.03.L":"pinky03_L",
 
@@ -48,22 +48,22 @@ metarig_bone_names_legacy_mode = { # metarig_bone : mblab_bone
     "thumb.03.R":"thumb03_R",
 
     "palm.01.R":"index00_R",
-    "f_index.01.R.02":"index01_R",
+    "f_index.01.R":"index01_R",
     "f_index.02.R":"index02_R",
     "f_index.03.R":"index03_R",
 
     "palm.02.R":"middle00_R",
-    "f_middle.01.R.02":"middle01_R",
+    "f_middle.01.R":"middle01_R",
     "f_middle.02.R":"middle02_R",
     "f_middle.03.R":"middle03_R",
 
     "palm.03.R":"ring00_R",
-    "f_ring.01.R.02":"ring01_R",
+    "f_ring.01.R":"ring01_R",
     "f_ring.02.R":"ring02_R",
     "f_ring.03.R":"ring03_R",
 
     "palm.04.R":"pinky00_R",
-    "f_pinky.01.R.02":"pinky01_R",
+    "f_pinky.01.R":"pinky01_R",
     "f_pinky.02.R":"pinky02_R",
     "f_pinky.03.R":"pinky03_R",
 
