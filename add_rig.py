@@ -134,11 +134,12 @@ metarig_bone_leg_names = { # metarig_bone : mblab_bone - only legs, no feet!
     "shin.R":"calf_R",
 }
 
+metarig_fingers = ["thumb.01.L", "f_index.01.L", "f_middle.01.L", "f_ring.01.L", "f_pinky.01.L", "thumb.01.R", "f_index.01.R", "f_middle.01.R", "f_ring.01.R", "f_pinky.01.R"]
 
 class RigifyMetaRigForMBLab_OT_add_rig(bpy.types.Operator):
     bl_idname = "object.rigify_meta_rig_for_mblab_add_rig"
     bl_label = "Add Meta-Rig"
-    bl_description = "MISSING" 
+    bl_description = "MISSING"
     bl_options = {'REGISTER', 'UNDO'} 
 
     settings = None
@@ -150,6 +151,12 @@ class RigifyMetaRigForMBLab_OT_add_rig(bpy.types.Operator):
                                                 default=0.0,#-0.01,
                                                 step=0.3,
                                                 precision=3)
+    bool_keep_face_rig : bpy.props.BoolProperty(name="Keep Face Rig",
+                                                    description="", 
+                                                    default=False)
+    bool_super_finger : bpy.props.BoolProperty(name="Finger Rig Type: limbs.super_finger (non-legacy)",
+                                                    description="", 
+                                                    default=False)
 
 
     def execute(self, context):
@@ -362,6 +369,32 @@ class RigifyMetaRigForMBLab_OT_add_rig(bpy.types.Operator):
                 bone_name = "breast." + ext
                 bpy.context.active_object.pose.bones[bone_name].rigify_type = "basic.copy"
                 bpy.context.active_object.data.bones[bone_name].layers = bpy.context.active_object.data.bones["chest"].layers
+
+
+        # delete face rig
+        if not legacy_mode:
+            if not self.bool_keep_face_rig:
+                bone_name = "face"
+                if bone_name in meta_rig.data.bones:
+                    bpy.ops.object.mode_set(mode='EDIT')
+                    for b in meta_rig.data.edit_bones:
+                        b.select = False                
+                    for b in meta_rig.data.edit_bones[bone_name].parent.children_recursive:
+                        b.select = True
+                    bpy.ops.armature.delete()
+                    bpy.ops.object.mode_set(mode='OBJECT')
+                else:
+                    print("Error: '%s' not found in armature" % bone_name)
+
+
+        # fix crooked fingers
+        if not legacy_mode:
+            for bone_name in metarig_fingers:
+                if self.bool_super_finger:
+                    meta_rig.pose.bones[bone_name].rigify_type = "limbs.super_finger"
+                    meta_rig.pose.bones[bone_name].rigify_parameters.primary_rotation_axis = 'X'
+                else:
+                    meta_rig.pose.bones[bone_name].rigify_parameters.roll_alignment = 'manual'
 
 
         return {'FINISHED'}
