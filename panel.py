@@ -1,23 +1,43 @@
 import bpy
-# from bpy.types import Panel
 
-class RigifyMetaRigForMBLab_PT_panel(bpy.types.Panel):
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_label = "Rigify Meta-Rig for MB-Lab"
-    bl_context = "objectmode"
-    bl_category = "MB-Lab"
+
+class RIGIFYFORMBLAB_OT_enable_rigify(bpy.types.Operator):
+    bl_idname = "object.rigifyformblab_enable_rigify"
+    bl_label = "Enable Rigify add-on"
+    bl_description = ""
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        bpy.ops.preferences.addon_enable(module="rigify")
+        return {'FINISHED'}
+
+
+class RIGIFYFORMBLAB_PT_panel(bpy.types.Panel):
+    bl_idname = "RIGIFYFORMBLAB_PT_panel"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_label = "Rigify for MB-Lab"
+    # bl_context = "objectmode"
+    bl_category = "Rigify for MB-Lab"
 
     def draw(self, context):
+
+        # legacy_mode = False
+        # addons = bpy.context.preferences.addons
+        # if "legacy_mode" in addons['rigify'].preferences:
+        #     legacy_mode = True if addons['rigify'].preferences['legacy_mode'] == 1 else False
+
         col = self.layout.column()
 
-        if not "rigify" in bpy.context.preferences.addons.keys():
-            col.label(text="Enable Rigify add-on!")
+        if not "rigify" in context.preferences.addons.keys():
+            col.operator('object.rigifyformblab_enable_rigify')
         else:
-            col.operator('object.rigify_meta_rig_for_mblab_add_rig')
-            col.operator('object.rigify_meta_rig_for_mblab_delete_face_rig')
+            col.operator('object.rigifyformblab_addrig')
+            col.operator('object.rigifyformblab_generaterig')
 
-            box = self.layout.box()
-            box.label(text="Rename Vertex Groups:")
-            box.operator('object.rigify_meta_rig_for_mblab_rename_mblab_to_rigify')
-            box.operator('object.rigify_meta_rig_for_mblab_rename_rigify_to_mblab')
+            col.label(text="Rename Vertex Groups:")
+            col.operator('object.rigifyformblab_rename_vertex_groups')
+            col.operator('object.rigifyformblab_unrename_vertex_groups')
+
+            # if legacy_mode:
+            #     col.label(text="Manual Weight Paint:", icon='ERROR')

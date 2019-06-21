@@ -1,4 +1,4 @@
-#    Rigify Meta-Rig for MB-Lab
+#    Rigify for MB-Lab
 #    Copyright (C) 2019 Daniel Engler
 
 #    This program is free software: you can redistribute it and/or modify
@@ -15,37 +15,41 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 bl_info = {
-    "name": "Rigify Meta-Rig for MB-Lab",
-    "description": "Add a Rigify Meta-Rig for MB-Lab Characters",
+    "name": "Rigify for MB-Lab",
+    "description": "Rigify for MB-Lab",
     "author": "Daniel Engler",
-    "version": (0, 5, 6),
+    "version": (0, 6, 0),
     "blender": (2, 80, 0),
-    "location": "View3D > Tools > MB-Lab",
-    "category": "Characters",
-    "warning": "Weight paint for the neck bones needs to be done manually! MB-Lab rig has one neck bone. The default Rigify rig has two neck bones.",
+    "location": "View3D > Tools > Rigify for MB-Lab",
+    "category": "Characters"
 }
 
 import bpy
 
-from . panel import RigifyMetaRigForMBLab_PT_panel
-from . add_rig import RigifyMetaRigForMBLab_OT_add_rig
-from . rename_vertex_groups import RigifyMetaRigForMBLab_OT_rename_mblab_to_rigify
-from . rename_vertex_groups import RigifyMetaRigForMBLab_OT_rename_rigify_to_mblab
-from . delete_face_rig import RigifyMetaRigForMBLab_OT_delete_face_rig
+from .add_rig import RIGIFYFORMBLAB_OT_addrig
+from .generate_rig import RIGIFYFORMBLAB_OT_generaterig
+from .panel import RIGIFYFORMBLAB_OT_enable_rigify, RIGIFYFORMBLAB_PT_panel
+from .rename_vertex_groups import (RIGIFYFORMBLAB_OT_rename_vertex_groups,
+                                   RIGIFYFORMBLAB_OT_unrename_vertex_groups)
+from .settings import RIGIFYFORMBLAB_settings
+
 
 def register():
-   bpy.utils.register_class(RigifyMetaRigForMBLab_OT_add_rig)
-   bpy.utils.register_class(RigifyMetaRigForMBLab_OT_delete_face_rig)
-   bpy.utils.register_class(RigifyMetaRigForMBLab_OT_rename_mblab_to_rigify)
-   bpy.utils.register_class(RigifyMetaRigForMBLab_OT_rename_rigify_to_mblab)
-   bpy.utils.register_class(RigifyMetaRigForMBLab_PT_panel)
-    
+   bpy.utils.register_class(RIGIFYFORMBLAB_OT_addrig)
+   bpy.utils.register_class(RIGIFYFORMBLAB_OT_rename_vertex_groups)
+   bpy.utils.register_class(RIGIFYFORMBLAB_OT_unrename_vertex_groups)
+   bpy.utils.register_class(RIGIFYFORMBLAB_OT_generaterig)
+   bpy.utils.register_class(RIGIFYFORMBLAB_OT_enable_rigify)
+   bpy.utils.register_class(RIGIFYFORMBLAB_PT_panel)
+
+
 def unregister():
-   bpy.utils.unregister_class(RigifyMetaRigForMBLab_PT_panel)
-   bpy.utils.unregister_class(RigifyMetaRigForMBLab_OT_rename_rigify_to_mblab)
-   bpy.utils.unregister_class(RigifyMetaRigForMBLab_OT_rename_mblab_to_rigify)
-   bpy.utils.unregister_class(RigifyMetaRigForMBLab_OT_delete_face_rig)
-   bpy.utils.unregister_class(RigifyMetaRigForMBLab_OT_add_rig)
+   bpy.utils.unregister_class(RIGIFYFORMBLAB_PT_panel)
+   bpy.utils.unregister_class(RIGIFYFORMBLAB_OT_enable_rigify)
+   bpy.utils.unregister_class(RIGIFYFORMBLAB_OT_generaterig)
+   bpy.utils.unregister_class(RIGIFYFORMBLAB_OT_unrename_vertex_groups)
+   bpy.utils.unregister_class(RIGIFYFORMBLAB_OT_rename_vertex_groups)
+   bpy.utils.unregister_class(RIGIFYFORMBLAB_OT_addrig)
 
 
 if __name__ == "__main__":

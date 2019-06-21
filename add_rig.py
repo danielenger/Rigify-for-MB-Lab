@@ -1,400 +1,351 @@
+import math
 import bpy
 from mathutils import Vector
-import math
 
-metarig_bone_names_legacy_mode = { # metarig_bone : mblab_bone
-    "hips":"pelvis",
-    "spine":"spine01",
-    # "chest":"", from spine01 tail to neck head
-    "neck":"neck",
-    "head":"head",
 
-    # "breast.L":"breast_L",
-    "foot.L":"foot_L",
-    "toe.L":"toes_L",
-    "shoulder.L":"clavicle_L",
-    "hand.L":"hand_L",
-    "thumb.01.L":"thumb01_L",
-    "thumb.02.L":"thumb02_L",
-    "thumb.03.L":"thumb03_L",
-    "palm.01.L":"index00_L",
-    "f_index.01.L":"index01_L",
-    "f_index.02.L":"index02_L",
-    "f_index.03.L":"index03_L",
-    "palm.02.L":"middle00_L",
-    "f_middle.01.L":"middle01_L",
-    "f_middle.02.L":"middle02_L",
-    "f_middle.03.L":"middle03_L",
-    "palm.03.L":"ring00_L",
-    "f_ring.01.L":"ring01_L",
-    "f_ring.02.L":"ring02_L",
-    "f_ring.03.L":"ring03_L",
-    "palm.04.L":"pinky00_L",
-    "f_pinky.01.L":"pinky01_L",
-    "f_pinky.02.L":"pinky02_L",
-    "f_pinky.03.L":"pinky03_L",
+class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
+    bl_idname = "object.rigifyformblab_addrig"
+    bl_label = "Add Meta Rig"
+    bl_description = "Add Meta Rig"
+    bl_options = {'REGISTER', 'UNDO'}
 
-    # "breast.R":"breast_R",
-    "foot.R":"foot_R",
-    "toe.R":"toes_R",
-    "shoulder.R":"clavicle_R",
-    "hand.R":"hand_R",
-    "thumb.01.R":"thumb01_R",
-    "thumb.02.R":"thumb02_R",
-    "thumb.03.R":"thumb03_R",
-    "palm.01.R":"index00_R",
-    "f_index.01.R":"index01_R",
-    "f_index.02.R":"index02_R",
-    "f_index.03.R":"index03_R",
-    "palm.02.R":"middle00_R",
-    "f_middle.01.R":"middle01_R",
-    "f_middle.02.R":"middle02_R",
-    "f_middle.03.R":"middle03_R",
-    "palm.03.R":"ring00_R",
-    "f_ring.01.R":"ring01_R",
-    "f_ring.02.R":"ring02_R",
-    "f_ring.03.R":"ring03_R",
-    "palm.04.R":"pinky00_R",
-    "f_pinky.01.R":"pinky01_R",
-    "f_pinky.02.R":"pinky02_R",
-    "f_pinky.03.R":"pinky03_R",
-}
+    bool_straight_legs: bpy.props.BoolProperty(name="Straight Legs",
+                                               description="",
+                                               default=False)
 
-metarig_bone_names = { # metarig_bone : mblab_bone
-    "spine":"pelvis",
-    "spine.001":"spine01",
-    "spine.002":"spine02",
-    "spine.003":"spine03",
-    # "spine.004":"neck", 
-    # "spine.005":"neck",
-    "spine.006":"head",
-
-    "breast.L":"breast_L",
-    "foot.L":"foot_L",
-    "toe.L":"toes_L",
-    "shoulder.L":"clavicle_L",
-    "hand.L":"hand_L",
-    "thumb.01.L":"thumb01_L",
-    "thumb.02.L":"thumb02_L",
-    "thumb.03.L":"thumb03_L",
-    "palm.01.L":"index00_L",
-    "f_index.01.L":"index01_L",
-    "f_index.02.L":"index02_L",
-    "f_index.03.L":"index03_L",
-    "palm.02.L":"middle00_L",
-    "f_middle.01.L":"middle01_L",
-    "f_middle.02.L":"middle02_L",
-    "f_middle.03.L":"middle03_L",
-    "palm.03.L":"ring00_L",
-    "f_ring.01.L":"ring01_L",
-    "f_ring.02.L":"ring02_L",
-    "f_ring.03.L":"ring03_L",
-    "palm.04.L":"pinky00_L",
-    "f_pinky.01.L":"pinky01_L",
-    "f_pinky.02.L":"pinky02_L",
-    "f_pinky.03.L":"pinky03_L",
-
-    "breast.R":"breast_R",
-    "foot.R":"foot_R",
-    "toe.R":"toes_R",
-    "shoulder.R":"clavicle_R",
-    "hand.R":"hand_R",
-    "thumb.01.R":"thumb01_R",
-    "thumb.02.R":"thumb02_R",
-    "thumb.03.R":"thumb03_R",
-    "palm.01.R":"index00_R",
-    "f_index.01.R":"index01_R",
-    "f_index.02.R":"index02_R",
-    "f_index.03.R":"index03_R",
-    "palm.02.R":"middle00_R",
-    "f_middle.01.R":"middle01_R",
-    "f_middle.02.R":"middle02_R",
-    "f_middle.03.R":"middle03_R",
-    "palm.03.R":"ring00_R",
-    "f_ring.01.R":"ring01_R",
-    "f_ring.02.R":"ring02_R",
-    "f_ring.03.R":"ring03_R",
-    "palm.04.R":"pinky00_R",
-    "f_pinky.01.R":"pinky01_R",
-    "f_pinky.02.R":"pinky02_R",
-    "f_pinky.03.R":"pinky03_R",
-}
-
-metarig_bone_arm_names = { # metarig_bone : mblab_bone
-    "upper_arm.L":"upperarm_L",
-    "forearm.L":"lowerarm_L",
-    "upper_arm.R":"upperarm_R",
-    "forearm.R":"lowerarm_R",
-}
-
-metarig_bone_leg_names = { # metarig_bone : mblab_bone - only legs, no feet!
-    "thigh.L":"thigh_L",
-    "shin.L":"calf_L",
-    "thigh.R":"thigh_R",
-    "shin.R":"calf_R",
-}
-
-metarig_fingers = ["thumb.01.L", "f_index.01.L", "f_middle.01.L", "f_ring.01.L", "f_pinky.01.L", "thumb.01.R", "f_index.01.R", "f_middle.01.R", "f_ring.01.R", "f_pinky.01.R"]
-
-class RigifyMetaRigForMBLab_OT_add_rig(bpy.types.Operator):
-    bl_idname = "object.rigify_meta_rig_for_mblab_add_rig"
-    bl_label = "Add Meta-Rig"
-    bl_description = "MISSING"
-    bl_options = {'REGISTER', 'UNDO'} 
-
-    settings = None
-    
-    bool_straight_legs : bpy.props.BoolProperty(name="Straight Legs",
-                                                    description="", 
-                                                    default=True)
-    knee_offset_y : bpy.props.FloatProperty(name="Knee y Offset", 
-                                                default=0.0,#-0.01,
+    knee_offset_y: bpy.props.FloatProperty(name="Knee y Offset",
+                                                default=0.0,  # -0.01,
                                                 step=0.3,
                                                 precision=3)
-    bool_keep_face_rig : bpy.props.BoolProperty(name="Keep Face Rig",
-                                                    description="", 
-                                                    default=False)
-    bool_super_finger : bpy.props.BoolProperty(name="Finger Rig Type: limbs.super_finger (non-legacy)",
-                                                    description="", 
-                                                    default=False)
 
+    bool_super_finger: bpy.props.BoolProperty(name="Finger Rig Type: limbs.super_finger (non-legacy)",
+                                              description="",
+                                              default=False)
 
     def execute(self, context):
-        
-        mblab_rig = context.active_object
 
-        meta_rig_bone_data = {} # store vectors for head, tail and roll for every meta bone -> "name of meta rig bone" : (head, tail, roll)
+        mblab_rig = None
+
+        is_muscle_rig = False
+        is_ik_rig = False
 
         legacy_mode = False
-        if "legacy_mode" in bpy.context.preferences.addons['rigify'].preferences:
-            legacy_mode = True if bpy.context.preferences.addons['rigify'].preferences['legacy_mode'] == 1 else False
+        if "legacy_mode" in context.preferences.addons['rigify'].preferences:
+            legacy_mode = True if context.preferences.addons[
+                'rigify'].preferences['legacy_mode'] == 1 else False
 
-        # error handling: a rig needs to be active
-        if not mblab_rig.type == 'ARMATURE':
-            self.report({'ERROR'}, "Error: '{0}' is not an armature".format(mblab_rig.name))
-            return {'CANCELLED'}
-        
-        ########
-        # START edit mode for mblab armature
-        ########
-        bpy.ops.object.mode_set(mode='EDIT')
-        # get bone data from mblab rig and store vectors (head, tail, roll) in meta_rig_bone_data dictionary
-        if legacy_mode:
-            for metarig_bone, mblab_bone in metarig_bone_names_legacy_mode.items():
-                b = mblab_rig.data.edit_bones[mblab_bone]
-                meta_rig_bone_data[metarig_bone] = (b.head.copy(), b.tail.copy(), b.roll)
-        else:
-            for metarig_bone, mblab_bone in metarig_bone_names.items():
-                b = mblab_rig.data.edit_bones[mblab_bone]
-                meta_rig_bone_data[metarig_bone] = (b.head.copy(), b.tail.copy(), b.roll)
+        # Get MB-lab rig
+        for obj in bpy.data.objects.values():
+            if 'manuellab_id' in obj.keys():
+                mblab_mesh = obj
+                if mblab_mesh.parent.type == 'ARMATURE':
+                    mblab_rig = mblab_mesh.parent
+                break
+            else:
+                if context.active_object == 'ARMATURE':
+                    mblab_rig = context.active_object
+                else:
+                    self.report({'ERROR'}, 'MB-Lab rig not found!')
+                    return {'CANCELLED'}
 
-        # repeat for arm bones
-        for metarig_bone, mblab_bone in metarig_bone_arm_names.items():
-            b = mblab_rig.data.edit_bones[mblab_bone]
-            meta_rig_bone_data[metarig_bone] = (b.head.copy(), b.tail.copy(), b.roll)
-        
 
-        # straight legs and knee offset fix for metarig
+        # Muscle rig?
+        for bone_name in mblab_rig.data.bones.keys():
+            if "muscle" in bone_name:
+                is_muscle_rig = True
+                break
+
+        # IK rig?
+        for bone_name in mblab_rig.data.bones.keys():
+            if "IK" in bone_name:
+                is_ik_rig = True
+                break
+
+        bpy.ops.object.mode_set(mode='OBJECT')
+        bpy.ops.object.select_all(action='DESELECT')
+
+        # Duplicate MB-lab rig
+        mblab_rig.hide_viewport = False
+        context.view_layer.objects.active = mblab_rig
+        mblab_rig.select_set(True)
+        bpy.ops.object.duplicate()
+        meta_rig = context.active_object
+        meta_rig.name = mblab_rig.name + "_metarig"
+        bpy.ops.object.mode_set(mode='OBJECT')
+
+        # Delete IK and struct bones
+        if is_ik_rig:
+            bpy.ops.object.mode_set(mode='EDIT')
+            meta_rig.data.layers[0] = True
+            meta_rig.data.layers[1] = True
+            meta_rig.data.layers[2] = True
+            bpy.ops.armature.select_all(action='DESELECT')
+
+            for bone_name, bone in meta_rig.data.edit_bones.items():
+                if "IK" in bone_name or "struct" in bone_name:
+                    bone.select = True
+            bpy.ops.armature.delete()
+
+            bpy.ops.armature.select_all(action='SELECT')
+            bpy.ops.armature.bone_layers(layers=(True, False, False, False, False, False, False, False, False, False, False, False, False, False,
+                                                 False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False))
+            meta_rig.data.layers[1] = False
+            meta_rig.data.layers[2] = False
+
+
+            meta_rig.data.edit_bones['head'].use_connect = True
+
+            # Delete constraints
+            bpy.ops.object.mode_set(mode='POSE')
+            for bone_name, bone in meta_rig.pose.bones.items():
+                if not ("rot_helper" in bone_name or "muscle" in bone_name):
+                    for constraint in bone.constraints.values():
+                        bone.constraints.remove(constraint)
+            
+            bpy.ops.object.mode_set(mode='OBJECT')
+
+
+        # Fix dislocated joints in thigh and calf
+        if is_muscle_rig:
+            bpy.ops.object.mode_set(mode='EDIT')
+            for ext in ["_L", "_R"]:
+                calf_head = meta_rig.data.edit_bones["calf" + ext].head.copy()
+                foot_head = meta_rig.data.edit_bones["foot" + ext].head.copy()
+                meta_rig.data.edit_bones["thigh" + ext].tail = calf_head
+                meta_rig.data.edit_bones["calf" + ext].tail = foot_head
+            bpy.ops.object.mode_set(mode='OBJECT')
+
+
+        # Straight legs and knee offset fix
         if self.bool_straight_legs:
-            tmp_leg_dict = {"thigh.L":"shin.L", "thigh.R":"shin.R", }
-            for thigh_name, shin_name in tmp_leg_dict.items():
-                mblab_thigh_name = metarig_bone_leg_names[thigh_name] # "thigh_L/R"
-                mblab_shin_name = metarig_bone_leg_names[shin_name] # "calf_L/R"
-                
-                # new knee position for straight legs                    
-                tmp_thigh_head = mblab_rig.data.edit_bones[mblab_thigh_name].head.copy()
-                tmp_thigh_tail = mblab_rig.data.edit_bones[mblab_shin_name].tail.copy()
-                new_length = mblab_rig.data.edit_bones[mblab_thigh_name].length 
-                new_straight_legs_knee_pos = new_length * ( (tmp_thigh_tail - tmp_thigh_head).normalized() ) + tmp_thigh_head
-                # y from mblab knee
-                new_straight_legs_knee_pos.y = mblab_rig.data.edit_bones[mblab_shin_name].head.y
+            for ext in ["_L", "_R"]:
+
+                thigh_name = "thigh" + ext
+                calf_name = "calf" + ext
+
+                meta_rig.select_set(False)
+                mblab_rig.select_set(True)
+                context.view_layer.objects.active = mblab_rig
+
+                bpy.ops.object.mode_set(mode='EDIT')
+
+                thigh_head = context.active_object.data.edit_bones[thigh_name].head.copy()
+                thigh_tail = context.active_object.data.edit_bones[calf_name].tail.copy()
+                new_length = context.active_object.data.edit_bones[thigh_name].length
+                new_straight_legs_knee_pos = new_length * \
+                    ((thigh_tail - thigh_head).normalized()) + thigh_head
+                new_straight_legs_knee_pos.y = context.active_object.data.edit_bones[
+                    calf_name].head.y
                 new_knee_pos = new_straight_legs_knee_pos
                 new_knee_pos.y = new_straight_legs_knee_pos.y + self.knee_offset_y
 
-                tmp_thigh_roll = mblab_rig.data.edit_bones[mblab_thigh_name].roll
-                tmp_shin_roll = mblab_rig.data.edit_bones[mblab_shin_name].roll
-
-                # legacy_mode legs roll
-                if legacy_mode:
-                    tmp_thigh_roll = tmp_thigh_roll + math.pi
-                    tmp_shin_roll = tmp_shin_roll + math.pi
-
-                    print("tmp_thigh_roll = ", tmp_thigh_roll)
-                    print("tmp_shin_roll = ", tmp_shin_roll)
-                    print(math.pi)
-                    
-                meta_rig_bone_data[thigh_name] = (tmp_thigh_head, new_knee_pos, tmp_thigh_roll)
-                meta_rig_bone_data[shin_name] = (new_knee_pos, tmp_thigh_tail, tmp_shin_roll)
-        else:
-            for metarig_bone, mblab_bone in metarig_bone_leg_names.items():
-                b = mblab_rig.data.edit_bones[mblab_bone]
-                meta_rig_bone_data[metarig_bone] = (b.head.copy(), b.tail.copy(), b.roll)
-        
-
-        # location for metarig "spine.004" head and "spine.005" head
-        if not legacy_mode:
-            tmp_neck_bone = mblab_rig.data.edit_bones["neck"]
-
-            spine005_head = tmp_neck_bone.length/2 * ( (tmp_neck_bone.tail - tmp_neck_bone.head).normalized() ) + tmp_neck_bone.head
-            spine005_tail = tmp_neck_bone.tail.copy()
-            spine005_roll = tmp_neck_bone.roll
-
-            spine004_head = tmp_neck_bone.head.copy()
-            spine004_tail = spine005_head
-            spine004_roll = tmp_neck_bone.roll
-
-            meta_rig_bone_data["spine.005"] = (spine005_head, spine005_tail, spine005_roll)
-            meta_rig_bone_data["spine.004"] = (spine004_head, spine004_tail, spine004_roll)
-
-        # legacy_mode chest
-        if legacy_mode:
-            # chest_tail = neck_head
-            chest_head = mblab_rig.data.edit_bones["spine02"].head.copy()
-            chest_tail = mblab_rig.data.edit_bones["neck"].head.copy()
-            chest_roll = mblab_rig.data.edit_bones["spine02"].roll
-            meta_rig_bone_data["chest"] = (chest_head, chest_tail, chest_roll)
-
-        # legacy_mode breast bones data
-        if legacy_mode:
-            for ext in ["L","R"]:
-                bone_name = "breast_" + ext
-                breast_head = mblab_rig.data.edit_bones[bone_name].head.copy()
-                breast_tail = mblab_rig.data.edit_bones[bone_name].tail.copy()
-                breast_roll = mblab_rig.data.edit_bones[bone_name].roll
-                meta_rig_bone_data["breast." + ext] = (breast_head, breast_tail, breast_roll)
+                if not is_muscle_rig:
+                    thigh_twist_name = "thigh_twist" + ext
+                    calf_twist_name = "calf_twist" + ext                    
+                    thigh_twist_len = context.active_object.data.edit_bones[thigh_twist_name].length
+                    thigh_twist_tail = thigh_twist_len * \
+                        ((new_knee_pos - thigh_head).normalized()) + thigh_head
+                    calf_twist_len = context.active_object.data.edit_bones[calf_twist_name].length
+                    calf_tail = context.active_object.data.edit_bones[calf_name].tail.copy()
+                    calf_twist_tail = calf_twist_len * \
+                        ((calf_tail - new_knee_pos).normalized()) + new_knee_pos
 
 
-        bpy.ops.object.mode_set(mode='OBJECT')
-        ########
-        # END edit mode for mblab armature
-        ########
-        
+                bpy.ops.object.mode_set(mode='OBJECT')
 
-        # create meta rig
-        #bpy.context.scene.cursor_location = mblab_rig.location
-        bpy.ops.object.armature_human_metarig_add()
-        meta_rig = context.active_object
-        meta_rig.location = mblab_rig.location
+                meta_rig.select_set(True)
+                mblab_rig.select_set(False)
+                context.view_layer.objects.active = meta_rig
+
+                bpy.ops.object.mode_set(mode='EDIT')
+
+                context.active_object.data.edit_bones[thigh_name].tail = new_knee_pos
+
+                if not is_muscle_rig:
+                    context.active_object.data.edit_bones[thigh_twist_name].tail = thigh_twist_tail
+
+                    context.active_object.data.edit_bones[calf_twist_name].head = new_knee_pos
+                    context.active_object.data.edit_bones[calf_twist_name].tail = calf_twist_tail
+
+                bpy.ops.object.mode_set(mode='OBJECT')
 
 
-        ########
-        # START edit mode for meta-rig
-        ########
         bpy.ops.object.mode_set(mode='EDIT')
 
-        # legacy_mode add breast bones
+        # Fix rolls
+        bpy.ops.armature.select_all(action='DESELECT')
+        for bone_name in ["thigh", "calf"]:
+            for ext in ["_L", "_R"]:
+                name = bone_name + ext
+                meta_rig.data.edit_bones[name].select = True
+        bpy.ops.armature.calculate_roll(type='GLOBAL_POS_Y')
+
+        bpy.ops.armature.select_all(action='DESELECT')
+        meta_rig.data.edit_bones["foot_L"].select = True
+        meta_rig.data.edit_bones["foot_R"].select = True
+        bpy.ops.armature.calculate_roll(type='GLOBAL_NEG_Z')
+
+        bpy.ops.armature.select_all(action='DESELECT')
+        meta_rig.data.edit_bones["toes_L"].select = True
+        meta_rig.data.edit_bones["toes_R"].select = True
+        bpy.ops.armature.calculate_roll(type='GLOBAL_POS_Z')
+
+        if is_muscle_rig:
+            for bone_name in ["rot_helper01", "rot_helper03", "rot_helper06"]:
+                for ext in ["_L", "_R"]:
+                    name = bone_name + ext
+                    meta_rig.data.edit_bones[name].roll = meta_rig.data.edit_bones[name].roll + math.pi
+
+            meta_rig.data.edit_bones["clavicle_L"].roll = math.radians(94.6248)
+            meta_rig.data.edit_bones["clavicle_R"].roll = math.radians(-94.6248)
+
+
+        # Fix disconnected toes
+        meta_rig.data.edit_bones['toes_L'].use_connect = True
+        meta_rig.data.edit_bones['toes_R'].use_connect = True
+
+        # Disconnect upperarms from clavicle
+        meta_rig.data.edit_bones['upperarm_L'].use_connect = False
+        meta_rig.data.edit_bones['upperarm_R'].use_connect = False
+
+        # re-parent thumbs
+        meta_rig.data.edit_bones[
+            'thumb01_L'].parent = meta_rig.data.edit_bones['index00_L']
+        meta_rig.data.edit_bones[
+            'thumb01_R'].parent = meta_rig.data.edit_bones['index00_R']
+
+        # Connect spine with neck
+        meta_rig.data.edit_bones['spine03'].tail = meta_rig.data.edit_bones['neck'].head.copy()
+        if not legacy_mode:
+            meta_rig.data.edit_bones['neck'].use_connect = True
+
+        # Legacy mode settings:
         if legacy_mode:
-            for ext in ["L","R"]:
-                bone_name = "breast." + ext
-                bpy.context.active_object.data.edit_bones.new(bone_name)
-                bpy.context.active_object.data.edit_bones[bone_name].parent = bpy.context.active_object.data.edit_bones["chest"]
-                
-
-        # y and z from mblab object origin is the same for left and right
-        heel_02_y = mblab_rig.location.y
-        heel_02_z = mblab_rig.location.z
-
-        # "heel.02.L", "heel.02.R"
-        for ext in [".L",".R"]:
-            bone_name = "heel.02" + ext
-            bone_heel_02 = meta_rig.data.edit_bones[bone_name]
-            # metarig heel x location relative in middle to mblab foot head
-            heel_02_head_x = (bone_heel_02.head.x - bone_heel_02.tail.x)/2 + meta_rig_bone_data["foot" + ext][0][0] # foot_l/r_x
-            heel_02_tail_x = (bone_heel_02.tail.x - bone_heel_02.head.x)/2 + meta_rig_bone_data["foot" + ext][0][0] # foot_l/r_x
-            # create new vectors from collected data
-            bone_heel_02_head = Vector( (heel_02_head_x, heel_02_y, heel_02_z) )
-            bone_heel_02_tail = Vector( (heel_02_tail_x, heel_02_y, heel_02_z) )
-            bone_heel_02_roll = meta_rig.data.edit_bones[bone_name].roll
-            # store data
-            meta_rig_bone_data[bone_name] = (bone_heel_02_head, bone_heel_02_tail, bone_heel_02_roll)
-
-            # legacy_mode heels:
-            if legacy_mode:
-                # bone_name = "foot" + ext
-                heel_head = meta_rig_bone_data["foot" + ext][0] #meta_rig.data.edit_bones["foot" + ext].head.copy()
-                # bone_name = "heel" + ext
-                heel_tail = meta_rig.data.edit_bones["heel" + ext].tail.copy()
-                heel_tail[0] = heel_head[0] # heel.tail.x = heel.head.x
-                heel_tail[1] = mblab_rig.location.y # heel.tail.y = 0
-                meta_rig_bone_data["heel" + ext] = (heel_head, heel_tail, 0)
-
-        # meta rig pelvis
-        if not legacy_mode:
-            new_pelvis_head = meta_rig_bone_data["spine"][0] # mblab_rig.data.edit_bones["pelvis"].head.copy()
-            tmp_bone_list = ("pelvis.L", "pelvis.R")
-            for bone_name in tmp_bone_list:
-                pelvis_head = meta_rig.data.edit_bones[bone_name].head
-                pelvis_tail = meta_rig.data.edit_bones[bone_name].tail
-                new_pelvis_tail = (pelvis_tail - pelvis_head) + new_pelvis_head
-                new_pelvis_roll = meta_rig.data.edit_bones[bone_name].roll            
-                meta_rig_bone_data[bone_name] = (new_pelvis_head, new_pelvis_tail, new_pelvis_roll)
-        
-        # meta rig face rig
-        if not legacy_mode:
-            relative_offset = meta_rig.data.edit_bones["face"].head.copy() - meta_rig_bone_data["spine.006"][0]
-            for bone in meta_rig.data.edit_bones["face"].parent.children_recursive:                
-                bone_name = bone.name
-                new_h = bone.head.copy() - relative_offset
-                new_t = bone.tail.copy() - relative_offset
-                new_r = meta_rig.data.edit_bones[bone_name].roll
-                meta_rig_bone_data[bone_name] = (new_h, new_t, new_r)
-
             
-        # go through all bones in meta rig, pass the ones not needed
-        for b in meta_rig.data.edit_bones:
-            try:
-                h, t, r = meta_rig_bone_data[b.name]
-                b.head = h
-                b.tail = t
-                b.roll = r # roll needed for rigify?
-            except:
-                pass
+            # legacy_mode finger roll
+            for ext in ["_L","_R"]:
+                for bone in meta_rig.data.edit_bones["hand" + ext].children_recursive:
+                    bone.roll = bone.roll + math.pi
         
+            # legacy_mode unparent "twist" bones
+            for bone_name, bone in meta_rig.data.edit_bones.items():
+                if "twist" in bone_name:
+                    bone.parent = None
 
-        # legacy_mode finger roll
-        for ext in [".L",".R"]:
-            for bone in meta_rig.data.edit_bones["hand" + ext].children_recursive:
-                bone.roll = bone.roll + math.pi
-
-
-        bpy.ops.object.mode_set(mode='OBJECT')
-        ########
-        # END edit mode for meta-rig
-        ########
-
-
-        # legacy_mode breast bones - set bone types and layers
+        # Create heels
         if legacy_mode:
-            for ext in ["L","R"]:
-                bone_name = "breast." + ext
-                bpy.context.active_object.pose.bones[bone_name].rigify_type = "basic.copy"
-                bpy.context.active_object.data.bones[bone_name].layers = bpy.context.active_object.data.bones["chest"].layers
 
+            for ext in ["_L", "_R"]:
+                bone_heel = meta_rig.data.edit_bones.new("heel" + ext)
+                foot_bone = meta_rig.data.edit_bones["foot" + ext]
+                heel_tail_x = foot_bone.head.x
+                bone_heel.tail = Vector((heel_tail_x, mblab_rig.location.y, mblab_rig.location.z))
+                bone_heel.use_connect = True
+                bone_heel.parent = meta_rig.data.edit_bones["calf" + ext]
+    
+        else:
+            for ext in ["_L", "_R"]:
+                bone_name = "heel" + ext
+                bone_heel = meta_rig.data.edit_bones.new(bone_name)
+                bone_heel.bbone_x = 0.01
+                bone_heel.bbone_z = 0.01
+                foot_bone = meta_rig.data.edit_bones["foot" + ext]
+                # heel x location relative to foot head
+                bone_heel.tail.x = 0.1 if ext == "_L" else -0.1
+                heel_head_x = (bone_heel.tail.x - foot_bone.head.x) / \
+                    2 + foot_bone.head.x
+                heel_tail_x = (foot_bone.head.x - bone_heel.tail.x) / \
+                    2 + foot_bone.head.x
+                bone_heel.head = Vector((heel_head_x, mblab_rig.location.y, mblab_rig.location.z))
+                bone_heel.tail = Vector((heel_tail_x, mblab_rig.location.y, mblab_rig.location.z))
+                # parent
+                bone_heel.use_connect = False
+                bone_heel.parent = foot_bone
 
-        # delete face rig
-        if not legacy_mode:
-            if not self.bool_keep_face_rig:
-                bone_name = "face"
-                if bone_name in meta_rig.data.bones:
-                    bpy.ops.object.mode_set(mode='EDIT')
-                    for b in meta_rig.data.edit_bones:
-                        b.select = False                
-                    for b in meta_rig.data.edit_bones[bone_name].parent.children_recursive:
-                        b.select = True
-                    bpy.ops.armature.delete()
-                    bpy.ops.object.mode_set(mode='OBJECT')
-                else:
-                    print("Error: '%s' not found in armature" % bone_name)
+        # Inherit scale
+        for bone in meta_rig.data.edit_bones.values():
+            bone.use_inherit_scale = True
+
+        # Unlock transforms
+        for name, bone in meta_rig.pose.bones.items():
+            bone.lock_location[0] = False
+            bone.lock_location[1] = False
+            bone.lock_location[2] = False
+            bone.lock_scale[0] = False
+            bone.lock_scale[1] = False
+            bone.lock_scale[2] = False
+
+        # TODO rigify layers
+
+        # set rigify types
+        if legacy_mode:
+
+            meta_rig.pose.bones["pelvis"].rigify_type = "spine"
+            meta_rig.pose.bones["pelvis"].rigify_parameters.chain_bone_controls = "1, 2, 3, 4"
+            
+            meta_rig.pose.bones["neck"].rigify_type = "neck_short"
+
+            for bone_name in ["clavicle_L", "clavicle_R", "breast_L", "breast_R"]:
+                meta_rig.pose.bones[bone_name].rigify_type = "basic.copy"
+
+            for ext in ["_L", "_R"]:
+                bone_name = 'thigh' + ext
+                meta_rig.pose.bones[bone_name].rigify_type = "biped.leg"
+
+                bone_name = 'upperarm' + ext
+                meta_rig.pose.bones[bone_name].rigify_type = "biped.arm"
+
+                meta_rig.pose.bones["index00" + ext].rigify_type = "palm"
+
+                for name in ['thumb01', 'index01', 'middle01', 'ring01', 'pinky01']:
+                    bone_name = name + ext
+                    meta_rig.pose.bones[bone_name].rigify_type = "finger"
+
+        else:
+
+            meta_rig.pose.bones["pelvis"].rigify_type = "spines.super_spine"
+            meta_rig.pose.bones["pelvis"].rigify_parameters['neck_pos'] = 5
+
+            for bone_name in ["clavicle_L", "clavicle_R", "breast_L", "breast_R"]:
+                meta_rig.pose.bones[bone_name].rigify_type = "basic.super_copy"
+
+            limb_segments = 1 if is_muscle_rig else 2
+
+            for ext in ["_L", "_R"]:
+                bone_name = 'thigh' + ext
+                meta_rig.pose.bones[bone_name].rigify_type = "limbs.super_limb"
+                meta_rig.pose.bones[bone_name].rigify_parameters.limb_type = 'leg'
+                meta_rig.pose.bones[bone_name].rigify_parameters.segments = limb_segments
+                meta_rig.pose.bones[bone_name].rigify_parameters.rotation_axis = 'x'
+
+                bone_name = 'upperarm' + ext
+                meta_rig.pose.bones[bone_name].rigify_type = "limbs.super_limb"
+                meta_rig.pose.bones[bone_name].rigify_parameters.limb_type = 'arm'
+                meta_rig.pose.bones[bone_name].rigify_parameters.segments = limb_segments
+
+                meta_rig.pose.bones["index00" +
+                                            ext].rigify_type = "limbs.super_palm"
+
+                for name in ['thumb01', 'index01', 'middle01', 'ring01', 'pinky01']:
+                    bone_name = name + ext
+                    meta_rig.pose.bones[bone_name].rigify_type = "limbs.simple_tentacle"
+
+        meta_rig.data.bones["breast_L"].hide = False
+        meta_rig.data.bones["breast_R"].hide = False
 
 
         # fix crooked fingers
+        finger_names = ["thumb", "index", "middle", "ring", "pinky"]
         if not legacy_mode:
-            for bone_name in metarig_fingers:
-                if self.bool_super_finger:
-                    meta_rig.pose.bones[bone_name].rigify_type = "limbs.super_finger"
-                    meta_rig.pose.bones[bone_name].rigify_parameters.primary_rotation_axis = 'X'
-                else:
-                    meta_rig.pose.bones[bone_name].rigify_parameters.roll_alignment = 'manual'
+            for finger_name in finger_names:
+                for ext in ["_L", "_R"]:
+                    bone_name = finger_name + "01" + ext
+                    if self.bool_super_finger:
+                        meta_rig.pose.bones[bone_name].rigify_type = "limbs.super_finger"
+                        meta_rig.pose.bones[bone_name].rigify_parameters.primary_rotation_axis = 'X'
+                    else:
+                        meta_rig.pose.bones[bone_name].rigify_parameters.roll_alignment = 'manual'
 
+        bpy.ops.object.mode_set(mode='POSE')
 
         return {'FINISHED'}
