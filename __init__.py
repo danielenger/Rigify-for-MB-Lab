@@ -31,7 +31,6 @@ from .generate_rig import RIGIFYFORMBLAB_OT_generaterig
 from .panel import RIGIFYFORMBLAB_OT_enable_rigify, RIGIFYFORMBLAB_PT_panel
 from .rename_vertex_groups import (RIGIFYFORMBLAB_OT_rename_vertex_groups,
                                    RIGIFYFORMBLAB_OT_unrename_vertex_groups)
-from .settings import RIGIFYFORMBLAB_settings
 
 
 def register():
