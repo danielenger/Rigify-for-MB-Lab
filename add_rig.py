@@ -43,13 +43,9 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
                     mblab_rig = mblab_mesh.parent
                 break
 
-        # if we didn't find the mblab_mesh, then check the active object
         if not mblab_mesh:
-            if context.active_object == 'ARMATURE':
-                mblab_rig = context.active_object
-            else:
-                self.report({'ERROR'}, 'MB-Lab rig not found!')
-                return {'CANCELLED'}
+            self.report({'ERROR'}, 'MB-Lab rig not found!')
+            return {'CANCELLED'}
 
 
         # Muscle rig?
