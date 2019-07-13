@@ -67,6 +67,7 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
         mblab_rig.hide_viewport = False
         context.view_layer.objects.active = mblab_rig
         mblab_rig.select_set(True)
+        bpy.ops.object.mode_set(mode='OBJECT')
         bpy.ops.object.duplicate()
         meta_rig = context.active_object
         meta_rig.name = mblab_rig.name + "_metarig"
