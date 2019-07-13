@@ -35,18 +35,21 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
                 'rigify'].preferences['legacy_mode'] == 1 else False
 
         # Get MB-lab rig
+        mblab_mesh = None
         for obj in bpy.data.objects.values():
             if 'manuellab_id' in obj.keys():
                 mblab_mesh = obj
                 if mblab_mesh.parent.type == 'ARMATURE':
                     mblab_rig = mblab_mesh.parent
                 break
+
+        # if we didn't find the mblab_mesh, then check the active object
+        if not mblab_mesh:
+            if context.active_object == 'ARMATURE':
+                mblab_rig = context.active_object
             else:
-                if context.active_object == 'ARMATURE':
-                    mblab_rig = context.active_object
-                else:
-                    self.report({'ERROR'}, 'MB-Lab rig not found!')
-                    return {'CANCELLED'}
+                self.report({'ERROR'}, 'MB-Lab rig not found!')
+                return {'CANCELLED'}
 
 
         # Muscle rig?

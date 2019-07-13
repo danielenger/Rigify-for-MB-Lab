@@ -157,7 +157,6 @@ class RIGIFYFORMBLAB_OT_generaterig(bpy.types.Operator):
             bpy.ops.pose.rigify_generate()
             rigify_rig = bpy.context.active_object
 
-
             # Delete meta rig (copy)
             bpy.ops.object.select_all(action='DESELECT')
             meta_rig.select_set(True)
@@ -165,6 +164,7 @@ class RIGIFYFORMBLAB_OT_generaterig(bpy.types.Operator):
             bpy.ops.object.delete(use_global=False)
 
             # Join muscle rig with generated Rigify rig
+            bpy.ops.object.select_all(action='DESELECT')
             muscle_rig.select_set(True)
             rigify_rig.select_set(True)
             bpy.context.view_layer.objects.active = rigify_rig
