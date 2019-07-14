@@ -201,7 +201,7 @@ class RIGIFYFORMBLAB_OT_generaterig(bpy.types.Operator):
         # reason these bones (minus the fingers) are kept in the rigify
         # rig and are not needed. I'm going to delete them at the end
         for pbone in mblab_rig.pose.bones:
-            if not 'muscle' in pbone.name and not is_finger(pbone.name):
+            if not 'muscle' in pbone.name and not is_finger(pbone.name) and not 'root' in pbone.name:
                 mblab_orig_bones.append(pbone.name)
 
         legacy_mode = False
