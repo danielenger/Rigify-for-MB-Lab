@@ -1,6 +1,172 @@
 import bpy
 from mathutils import Vector
+from mathutils import Color
 
+def is_finger(name):
+    finger_names = ['thumb01', 'index01', 'middle01', 'ring01', 'pinky01']
+    for f in finger_names:
+        if f in name:
+            return True
+    return False
+
+def set_rigify_data(obj):
+    arm = obj.data
+
+    for i in range(6):
+        arm.rigify_colors.add()
+
+    arm.rigify_colors[0].name = "Root"
+    arm.rigify_colors[0].active = Color((0.5490000247955322, 1.0, 1.0))
+    arm.rigify_colors[0].normal = Color((0.43529415130615234, 0.18431372940540314, 0.41568630933761597))
+    arm.rigify_colors[0].select = Color((0.3140000104904175, 0.7839999794960022, 1.0))
+    arm.rigify_colors[0].standard_colors_lock = True
+    arm.rigify_colors[1].name = "IK"
+    arm.rigify_colors[1].active = Color((0.5490000247955322, 1.0, 1.0))
+    arm.rigify_colors[1].normal = Color((0.6039215922355652, 0.0, 0.0))
+    arm.rigify_colors[1].select = Color((0.3140000104904175, 0.7839999794960022, 1.0))
+    arm.rigify_colors[1].standard_colors_lock = True
+    arm.rigify_colors[2].name = "Special"
+    arm.rigify_colors[2].active = Color((0.5490000247955322, 1.0, 1.0))
+    arm.rigify_colors[2].normal = Color((0.9568628072738647, 0.7882353663444519, 0.0470588281750679))
+    arm.rigify_colors[2].select = Color((0.3140000104904175, 0.7839999794960022, 1.0))
+    arm.rigify_colors[2].standard_colors_lock = True
+    arm.rigify_colors[3].name = "Tweak"
+    arm.rigify_colors[3].active = Color((0.5490000247955322, 1.0, 1.0))
+    arm.rigify_colors[3].normal = Color((0.03921568766236305, 0.21176472306251526, 0.5803921818733215))
+    arm.rigify_colors[3].select = Color((0.3140000104904175, 0.7839999794960022, 1.0))
+    arm.rigify_colors[3].standard_colors_lock = True
+    arm.rigify_colors[4].name = "FK"
+    arm.rigify_colors[4].active = Color((0.5490000247955322, 1.0, 1.0))
+    arm.rigify_colors[4].normal = Color((0.11764706671237946, 0.5686274766921997, 0.03529411926865578))
+    arm.rigify_colors[4].select = Color((0.3140000104904175, 0.7839999794960022, 1.0))
+    arm.rigify_colors[4].standard_colors_lock = True
+    arm.rigify_colors[5].name = "Extra"
+    arm.rigify_colors[5].active = Color((0.5490000247955322, 1.0, 1.0))
+    arm.rigify_colors[5].normal = Color((0.9686275124549866, 0.250980406999588, 0.0941176563501358))
+    arm.rigify_colors[5].select = Color((0.3140000104904175, 0.7839999794960022, 1.0))
+    arm.rigify_colors[5].standard_colors_lock = True
+
+    for i in range(29):
+        arm.rigify_layers.add()
+
+    arm.rigify_layers[0].name = "Fingers (IK)"
+    arm.rigify_layers[0].row = 1
+    arm.rigify_layers[0].selset = False
+    arm.rigify_layers[0].group = 0
+    arm.rigify_layers[1].name = "Fingers (Tweak)"
+    arm.rigify_layers[1].row = 1
+    arm.rigify_layers[1].selset = False
+    arm.rigify_layers[1].group = 0
+    arm.rigify_layers[2].name = " "
+    arm.rigify_layers[2].row = 1
+    arm.rigify_layers[2].selset = False
+    arm.rigify_layers[2].group = 0
+    arm.rigify_layers[3].name = "Torso"
+    arm.rigify_layers[3].row = 3
+    arm.rigify_layers[3].selset = False
+    arm.rigify_layers[3].group = 3
+    arm.rigify_layers[4].name = "Torso (Tweak)"
+    arm.rigify_layers[4].row = 4
+    arm.rigify_layers[4].selset = False
+    arm.rigify_layers[4].group = 4
+    arm.rigify_layers[5].name = " "
+    arm.rigify_layers[5].row = 1
+    arm.rigify_layers[5].selset = False
+    arm.rigify_layers[5].group = 0
+    arm.rigify_layers[6].name = " "
+    arm.rigify_layers[6].row = 1
+    arm.rigify_layers[6].selset = False
+    arm.rigify_layers[6].group = 0
+    arm.rigify_layers[7].name = "Arm.L (IK)"
+    arm.rigify_layers[7].row = 7
+    arm.rigify_layers[7].selset = True
+    arm.rigify_layers[7].group = 2
+    arm.rigify_layers[8].name = "Arm.L (FK)"
+    arm.rigify_layers[8].row = 8
+    arm.rigify_layers[8].selset = False
+    arm.rigify_layers[8].group = 5
+    arm.rigify_layers[9].name = "Arm.L (Tweak)"
+    arm.rigify_layers[9].row = 9
+    arm.rigify_layers[9].selset = False
+    arm.rigify_layers[9].group = 4
+    arm.rigify_layers[10].name = "Arm.R (IK)"
+    arm.rigify_layers[10].row = 7
+    arm.rigify_layers[10].selset = False
+    arm.rigify_layers[10].group = 2
+    arm.rigify_layers[11].name = "Arm.R (FK)"
+    arm.rigify_layers[11].row = 8
+    arm.rigify_layers[11].selset = False
+    arm.rigify_layers[11].group = 5
+    arm.rigify_layers[12].name = "Arm.R (Tweak)"
+    arm.rigify_layers[12].row = 9
+    arm.rigify_layers[12].selset = False
+    arm.rigify_layers[12].group = 4
+    arm.rigify_layers[13].name = "Leg.L (IK)"
+    arm.rigify_layers[13].row = 10
+    arm.rigify_layers[13].selset = False
+    arm.rigify_layers[13].group = 2
+    arm.rigify_layers[14].name = "Leg.L (FK)"
+    arm.rigify_layers[14].row = 11
+    arm.rigify_layers[14].selset = False
+    arm.rigify_layers[14].group = 5
+    arm.rigify_layers[15].name = "Leg.L (Tweak)"
+    arm.rigify_layers[15].row = 12
+    arm.rigify_layers[15].selset = False
+    arm.rigify_layers[15].group = 4
+    arm.rigify_layers[16].name = "Leg.R (IK)"
+    arm.rigify_layers[16].row = 10
+    arm.rigify_layers[16].selset = False
+    arm.rigify_layers[16].group = 2
+    arm.rigify_layers[17].name = "Leg.R (FK)"
+    arm.rigify_layers[17].row = 11
+    arm.rigify_layers[17].selset = False
+    arm.rigify_layers[17].group = 5
+    arm.rigify_layers[18].name = "Leg.R (Tweak)"
+    arm.rigify_layers[18].row = 12
+    arm.rigify_layers[18].selset = False
+    arm.rigify_layers[18].group = 4
+    arm.rigify_layers[19].name = ""
+    arm.rigify_layers[19].row = 1
+    arm.rigify_layers[19].selset = False
+    arm.rigify_layers[19].group = 0
+    arm.rigify_layers[20].name = ""
+    arm.rigify_layers[20].row = 1
+    arm.rigify_layers[20].selset = False
+    arm.rigify_layers[20].group = 0
+    arm.rigify_layers[21].name = ""
+    arm.rigify_layers[21].row = 1
+    arm.rigify_layers[21].selset = False
+    arm.rigify_layers[21].group = 0
+    arm.rigify_layers[22].name = ""
+    arm.rigify_layers[22].row = 1
+    arm.rigify_layers[22].selset = False
+    arm.rigify_layers[22].group = 0
+    arm.rigify_layers[23].name = ""
+    arm.rigify_layers[23].row = 1
+    arm.rigify_layers[23].selset = False
+    arm.rigify_layers[23].group = 0
+    arm.rigify_layers[24].name = ""
+    arm.rigify_layers[24].row = 1
+    arm.rigify_layers[24].selset = False
+    arm.rigify_layers[24].group = 0
+    arm.rigify_layers[25].name = ""
+    arm.rigify_layers[25].row = 1
+    arm.rigify_layers[25].selset = False
+    arm.rigify_layers[25].group = 0
+    arm.rigify_layers[26].name = ""
+    arm.rigify_layers[26].row = 1
+    arm.rigify_layers[26].selset = False
+    arm.rigify_layers[26].group = 0
+    arm.rigify_layers[27].name = ""
+    arm.rigify_layers[27].row = 1
+    arm.rigify_layers[27].selset = False
+    arm.rigify_layers[27].group = 0
+    arm.rigify_layers[28].name = "Root"
+    arm.rigify_layers[28].row = 14
+    arm.rigify_layers[28].selset = False
+    arm.rigify_layers[28].group = 1
+
+    arm.layers = [(x in [0, 3, 5, 7, 10, 13, 16]) for x in range(32)]
 
 class RIGIFYFORMBLAB_OT_generaterig(bpy.types.Operator):
     bl_idname = "object.rigifyformblab_generaterig"
@@ -17,6 +183,26 @@ class RIGIFYFORMBLAB_OT_generaterig(bpy.types.Operator):
 
         muscle_parents = {}
         subtargets = {}
+
+        mblab_mesh = None
+        mblab_rig = None
+        mblab_orig_bones = []
+        for obj in bpy.data.objects.values():
+            if 'manuellab_id' in obj.keys():
+                mblab_mesh = obj
+                if mblab_mesh.parent.type == 'ARMATURE':
+                    mblab_rig = mblab_mesh.parent
+                break
+
+        if not mblab_mesh or not mblab_rig:
+            print("Can't find mblab character. What's going on?")
+
+        # keep a list of the original bones, minus the fingers. For some
+        # reason these bones (minus the fingers) are kept in the rigify
+        # rig and are not needed. I'm going to delete them at the end
+        for pbone in mblab_rig.pose.bones:
+            if not 'muscle' in pbone.name and not is_finger(pbone.name):
+                mblab_orig_bones.append(pbone.name)
 
         legacy_mode = False
         if "legacy_mode" in context.preferences.addons['rigify'].preferences:
@@ -139,9 +325,9 @@ class RIGIFYFORMBLAB_OT_generaterig(bpy.types.Operator):
 
             # Move bones to layer 3 and 4
             for name, bone in muscle_rig.data.edit_bones.items():
-                if "MCH" in name:
+                if "MCH" in name or 'muscle' in name:
                     bone.layers[2] = True
-                if "DEF" in name:
+                if "DEF" in name and not 'muscle' in name:
                     bone.layers[3] = True
             for name, bone in muscle_rig.data.edit_bones.items():
                 if "MCH" in name or "DEF" in name:
@@ -154,6 +340,7 @@ class RIGIFYFORMBLAB_OT_generaterig(bpy.types.Operator):
             bpy.ops.object.select_all(action='DESELECT')
             meta_rig.select_set(True)
             bpy.context.view_layer.objects.active = meta_rig
+            set_rigify_data(meta_rig)
             bpy.ops.pose.rigify_generate()
             rigify_rig = bpy.context.active_object
 
@@ -238,5 +425,31 @@ class RIGIFYFORMBLAB_OT_generaterig(bpy.types.Operator):
             rigify_rig.pose.bones["hand_L_ik"].custom_shape_scale = 2.5
             rigify_rig.pose.bones["hand_R_ik"].custom_shape_scale = 2.5
 
+        # clean extra bones left behind
+        # TODO: for some reason when I set the layers it results in 
+        # some bones from the original rig left behind,
+        # but it's a bit wonky. The names have .00X after them, because
+        # they have the same name as the rigify_rig bones. I need to
+        # delete those to clean up. I kept an original list of the bones.
+        # Now I need to adjust this list to account for this naming
+        # discrepancy. I'll go with the assumption that if there exists a
+        # name like the original, but has .00X pattern appended to it,
+        # then that bone should be deleted.
+        bpy.ops.object.mode_set(mode='OBJECT')
+        bpy.ops.object.select_all(action='DESELECT')
+        rigify_rig.select_set(True)
+        bpy.ops.object.mode_set(mode='EDIT')
+        for bone in rigify_rig.pose.bones:
+            for i in range(0, len(mblab_orig_bones)):
+                if mblab_orig_bones[i] in bone.name:
+                    if '.00' in bone.name:
+                        mblab_orig_bones[i] = bone.name
+        bpy.ops.armature.select_all(action='DESELECT')
+        for bn in mblab_orig_bones:
+            bpy.ops.object.select_pattern(pattern=bn)
+        bpy.ops.armature.delete()
+        bpy.ops.object.mode_set(mode='OBJECT')
+        bpy.context.object.display_type = 'SOLID'
+        bpy.context.object.data.display_type = 'BBONE'
 
         return {'FINISHED'}

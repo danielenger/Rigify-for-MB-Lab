@@ -22,6 +22,91 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
                                               description="",
                                               default=False)
 
+    def set_layers(self, meta_rig):
+        # bone names, left layer, right layer, left tweak layer, right
+        # tweak layer, left fk layer, right fk_layer
+        db = [{'bname': ['thumb','index','middle','ring','pinky'],
+                'layer_L': 5, 'layer_R': 5, 'tweak_L': 6, 'tweak_R': 6,
+                'fk_L': -1, 'fk_R': -1},
+                {'bname': ['hand'],
+                'layer_L': 7, 'layer_R': 10, 'tweak_L': -1, 'tweak_R': -1,
+                'fk_L': -1, 'fk_R': -1},
+                {'bname': ['lowerarm'],
+                'layer_L': 7, 'layer_R': 10, 'tweak_L': -1, 'tweak_R': -1,
+                'fk_L': -1, 'fk_R': -1},
+                {'bname': ['upperarm'],
+                'layer_L': 7, 'layer_R': 10, 'tweak_L': 9, 'tweak_R': 12,
+                'fk_L': 8, 'fk_R': 11},
+                {'bname': ['clavicle'],
+                'layer_L': 3, 'layer_R': 3, 'tweak_L': -1, 'tweak_R': -1,
+                'fk_L': -1, 'fk_R': -1},
+                {'bname': ['breast'],
+                'layer_L': 3, 'layer_R': 3, 'tweak_L': -1, 'tweak_R': -1,
+                'fk_L': -1, 'fk_R': -1},
+                {'bname': ['pelvis'],
+                'layer_L': 3, 'layer_R': 3, 'tweak_L': -1, 'tweak_R': -1,
+                'fk_L': -1, 'fk_R': -1},
+                {'bname': ['thigh'],
+                'layer_L': 13, 'layer_R': 16, 'tweak_L': 15, 'tweak_R': 18,
+                'fk_L': 14, 'fk_R': 17},
+                {'bname': ['calf'],
+                'layer_L': 13, 'layer_R': 16, 'tweak_L': -1, 'tweak_R': -1,
+                'fk_L': -1, 'fk_R': -1},
+                {'bname': ['foot'],
+                'layer_L': 13, 'layer_R': 16, 'tweak_L': -1, 'tweak_R': -1,
+                'fk_L': -1, 'fk_R': -1},
+                {'bname': ['toes'],
+                'layer_L': 13, 'layer_R': 16, 'tweak_L': -1, 'tweak_R': -1,
+                'fk_L': -1, 'fk_R': -1},
+                {'bname': ['head'],
+                'layer_L': 3, 'layer_R': 3, 'tweak_L': -1, 'tweak_R': -1,
+                'fk_L': -1, 'fk_R': -1},
+                {'bname': ['neck'],
+                'layer_L': 3, 'layer_R': 3, 'tweak_L': -1, 'tweak_R': -1,
+                'fk_L': -1, 'fk_R': -1},
+                {'bname': ['spine03'],
+                'layer_L': 3, 'layer_R': 3, 'tweak_L': -1, 'tweak_R': -1,
+                'fk_L': -1, 'fk_R': -1},
+                {'bname': ['spine02'],
+                'layer_L': 3, 'layer_R': 3, 'tweak_L': -1, 'tweak_R': -1,
+                'fk_L': -1, 'fk_R': -1},
+                {'bname': ['spine01'],
+                'layer_L': 3, 'layer_R': 3, 'tweak_L': -1, 'tweak_R': -1,
+                'fk_L': -1, 'fk_R': -1}]
+
+        bpy.ops.object.mode_set(mode='OBJECT')
+        bpy.ops.object.select_all(action='DESELECT')
+        meta_rig.select_set(True)
+        for pbone in meta_rig.pose.bones:
+            for entry in db:
+                if pbone.bone.name.strip('_L').strip('_R') in entry['bname']:
+                    if '_L' in pbone.bone.name:
+                        pbone.bone.layers = [i == entry['layer_L'] for i in range(0, 32)]
+                        try:
+                            if entry['tweak_L'] != -1:
+                                pbone.rigify_parameters.tweak_layers = [i == entry['tweak_L'] for i in range(0, 32)]
+                        except AttributeError:
+                            pass
+                        try:
+                            if entry['fk_L'] != -1:
+                                pbone.rigify_parameters.fk_layers = [i == entry['fk_L'] for i in range(0, 32)]
+                        except AttributeError:
+                            pass
+                    else:
+                        pbone.bone.layers = [i == entry['layer_R'] for i in range(0, 32)]
+                        try:
+                            if entry['tweak_R'] != -1:
+                                pbone.rigify_parameters.tweak_layers = [i == entry['tweak_R'] for i in range(0, 32)]
+                        except AttributeError:
+                            pass
+                        try:
+                            if entry['fk_R'] != -1:
+                                pbone.rigify_parameters.fk_layers = [i == entry['fk_R'] for i in range(0, 32)]
+                        except AttributeError:
+                            pass
+
+
+
     def execute(self, context):
 
         mblab_rig = None
@@ -36,6 +121,7 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
 
         # Get MB-lab rig
         mblab_mesh = None
+        mblab_rig = None
         for obj in bpy.data.objects.values():
             if 'manuellab_id' in obj.keys():
                 mblab_mesh = obj
@@ -43,7 +129,7 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
                     mblab_rig = mblab_mesh.parent
                 break
 
-        if not mblab_mesh:
+        if not mblab_mesh or not mblab_rig:
             self.report({'ERROR'}, 'MB-Lab rig not found!')
             return {'CANCELLED'}
 
@@ -275,8 +361,6 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
             bone.lock_scale[1] = False
             bone.lock_scale[2] = False
 
-        # TODO rigify layers
-
         # set rigify types
         if legacy_mode:
 
@@ -345,6 +429,8 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
                         meta_rig.pose.bones[bone_name].rigify_parameters.primary_rotation_axis = 'X'
                     else:
                         meta_rig.pose.bones[bone_name].rigify_parameters.roll_alignment = 'manual'
+
+        self.set_layers(meta_rig)
 
         bpy.ops.object.mode_set(mode='POSE')
 
