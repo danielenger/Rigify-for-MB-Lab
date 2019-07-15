@@ -125,28 +125,28 @@ def set_rigify_data(obj):
     arm.rigify_layers[18].row = 12
     arm.rigify_layers[18].selset = False
     arm.rigify_layers[18].group = 4
-    arm.rigify_layers[19].name = ""
-    arm.rigify_layers[19].row = 1
+    arm.rigify_layers[19].name = "Muscle Arm.L"
+    arm.rigify_layers[19].row = 16
     arm.rigify_layers[19].selset = False
     arm.rigify_layers[19].group = 0
-    arm.rigify_layers[20].name = ""
-    arm.rigify_layers[20].row = 1
+    arm.rigify_layers[20].name = "Muscle Arm.R"
+    arm.rigify_layers[20].row = 16
     arm.rigify_layers[20].selset = False
     arm.rigify_layers[20].group = 0
-    arm.rigify_layers[21].name = ""
-    arm.rigify_layers[21].row = 1
+    arm.rigify_layers[21].name = "Muscle Leg.L"
+    arm.rigify_layers[21].row = 17
     arm.rigify_layers[21].selset = False
     arm.rigify_layers[21].group = 0
-    arm.rigify_layers[22].name = ""
-    arm.rigify_layers[22].row = 1
+    arm.rigify_layers[22].name = "Muscle Leg.R"
+    arm.rigify_layers[22].row = 17
     arm.rigify_layers[22].selset = False
     arm.rigify_layers[22].group = 0
-    arm.rigify_layers[23].name = ""
-    arm.rigify_layers[23].row = 1
+    arm.rigify_layers[23].name = "Muscle Torso"
+    arm.rigify_layers[23].row = 18
     arm.rigify_layers[23].selset = False
     arm.rigify_layers[23].group = 0
-    arm.rigify_layers[24].name = ""
-    arm.rigify_layers[24].row = 1
+    arm.rigify_layers[24].name = "Muscle Neck"
+    arm.rigify_layers[24].row = 18
     arm.rigify_layers[24].selset = False
     arm.rigify_layers[24].group = 0
     arm.rigify_layers[25].name = ""
@@ -166,7 +166,7 @@ def set_rigify_data(obj):
     arm.rigify_layers[28].selset = False
     arm.rigify_layers[28].group = 1
 
-    arm.layers = [(x in [0, 3, 5, 7, 10, 13, 16]) for x in range(32)]
+    arm.layers = [(x in [0, 3, 5, 7, 10, 13, 16, 19, 20, 21, 22, 23, 24]) for x in range(32)]
 
 class RIGIFYFORMBLAB_OT_generaterig(bpy.types.Operator):
     bl_idname = "object.rigifyformblab_generaterig"
@@ -325,10 +325,40 @@ class RIGIFYFORMBLAB_OT_generaterig(bpy.types.Operator):
 
             # Move bones to layer 3 and 4
             for name, bone in muscle_rig.data.edit_bones.items():
-                if "MCH" in name or 'muscle' in name:
-                    bone.layers[2] = True
-                if "DEF" in name and not 'muscle' in name:
-                    bone.layers[3] = True
+                if ('DEF-lwrm' in name or 'DEF-tcs' in name or 'DEF-shld' in name \
+                    or 'DEF-bcs' in name) and '_L' in name:
+                    bone.layers[19] = True
+                if ('MCH-lwrm' in name or 'MCH-tcs' in name or 'MCH-shld' in name \
+                    or 'MCH-bcs' in name) and '_L' in name:
+                    bone.layers[19] = True
+
+                if ('DEF-lwrm' in name or 'DEF-tcs' in name or 'DEF-shld' in name \
+                    or 'DEF-bcs' in name) and '_R' in name:
+                    bone.layers[20] = True
+                if ('MCH-lwrm' in name or 'MCH-tcs' in name or 'MCH-shld' in name \
+                    or 'MCH-bcs' in name) and '_R' in name:
+                    bone.layers[20] = True
+
+                if ('DEF-lgs' in name or 'DEF-lwrl' in name) and '_L' in name:
+                    bone.layers[21] = True
+                if ('MCH-lgs' in name or 'MCH-lwrl' in name) and '_L' in name:
+                    bone.layers[21] = True
+
+                if ('DEF-lgs' in name or 'DEF-lwrl' in name) and '_R' in name:
+                    bone.layers[22] = True
+                if ('MCH-lgs' in name or 'MCH-lwrl' in name) and '_R' in name:
+                    bone.layers[22] = True
+
+                if 'DEF-abd' in name or 'DEF-spn' in name or 'DEF-pct' in name or \
+                   'DEF-bk' in name or 'DEF-glt' in name:
+                    bone.layers[23] = True
+                if 'MCH-abd' in name or 'MCH-spn' in name or 'MCH-pct' in name or \
+                   'MCH-bk' in name or 'MCH-glt' in name:
+                    bone.layers[23] = True
+
+                if 'DEF-nk' in name or 'MCH-nk' in name:
+                    bone.layers[24] = True
+
             for name, bone in muscle_rig.data.edit_bones.items():
                 if "MCH" in name or "DEF" in name:
                     bone.layers[0] = False
