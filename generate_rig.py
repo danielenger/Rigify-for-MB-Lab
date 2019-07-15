@@ -3,7 +3,7 @@ from mathutils import Vector
 from mathutils import Color
 
 def is_finger(name):
-    finger_names = ['thumb01', 'index01', 'middle01', 'ring01', 'pinky01']
+    finger_names = ['thumb', 'index', 'middle', 'ring', 'pinky']
     for f in finger_names:
         if f in name:
             return True
