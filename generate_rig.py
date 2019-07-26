@@ -216,10 +216,11 @@ class RIGIFYFORMBLAB_OT_generaterig(bpy.types.Operator):
                 break
 
         if not is_muscle_rig:
+            meta_rig = bpy.context.active_object
+            bpy.context.view_layer.objects.active = meta_rig
+            set_rigify_data(meta_rig)
             bpy.ops.pose.rigify_generate()
-
         else:
-
             org_meta_rig = bpy.context.active_object
 
             bpy.ops.object.mode_set(mode='OBJECT')
