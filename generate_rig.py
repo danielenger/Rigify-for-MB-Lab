@@ -456,31 +456,32 @@ class RIGIFYFORMBLAB_OT_generaterig(bpy.types.Operator):
             rigify_rig.pose.bones["hand_L_ik"].custom_shape_scale = 2.5
             rigify_rig.pose.bones["hand_R_ik"].custom_shape_scale = 2.5
 
-        # clean extra bones left behind
-        # TODO: for some reason when I set the layers it results in 
-        # some bones from the original rig left behind,
-        # but it's a bit wonky. The names have .00X after them, because
-        # they have the same name as the rigify_rig bones. I need to
-        # delete those to clean up. I kept an original list of the bones.
-        # Now I need to adjust this list to account for this naming
-        # discrepancy. I'll go with the assumption that if there exists a
-        # name like the original, but has .00X pattern appended to it,
-        # then that bone should be deleted.
-        bpy.ops.object.mode_set(mode='OBJECT')
-        bpy.ops.object.select_all(action='DESELECT')
-        rigify_rig.select_set(True)
-        bpy.ops.object.mode_set(mode='EDIT')
-        for bone in rigify_rig.pose.bones:
-            for i in range(0, len(mblab_orig_bones)):
-                if mblab_orig_bones[i] in bone.name:
-                    if '.00' in bone.name:
-                        mblab_orig_bones[i] = bone.name
-        bpy.ops.armature.select_all(action='DESELECT')
-        for bn in mblab_orig_bones:
-            bpy.ops.object.select_pattern(pattern=bn)
-        bpy.ops.armature.delete()
-        bpy.ops.object.mode_set(mode='OBJECT')
-        bpy.context.object.display_type = 'SOLID'
-        bpy.context.object.data.display_type = 'BBONE'
+        if is_muscle_rig:
+            # clean extra bones left behind
+            # TODO: for some reason when I set the layers it results in 
+            # some bones from the original rig left behind,
+            # but it's a bit wonky. The names have .00X after them, because
+            # they have the same name as the rigify_rig bones. I need to
+            # delete those to clean up. I kept an original list of the bones.
+            # Now I need to adjust this list to account for this naming
+            # discrepancy. I'll go with the assumption that if there exists a
+            # name like the original, but has .00X pattern appended to it,
+            # then that bone should be deleted.
+            bpy.ops.object.mode_set(mode='OBJECT')
+            bpy.ops.object.select_all(action='DESELECT')
+            rigify_rig.select_set(True)
+            bpy.ops.object.mode_set(mode='EDIT')
+            for bone in rigify_rig.pose.bones:
+                for i in range(0, len(mblab_orig_bones)):
+                    if mblab_orig_bones[i] in bone.name:
+                        if '.00' in bone.name:
+                            mblab_orig_bones[i] = bone.name
+            bpy.ops.armature.select_all(action='DESELECT')
+            for bn in mblab_orig_bones:
+                bpy.ops.object.select_pattern(pattern=bn)
+            bpy.ops.armature.delete()
+            bpy.ops.object.mode_set(mode='OBJECT')
+            bpy.context.object.display_type = 'SOLID'
+            bpy.context.object.data.display_type = 'BBONE'
 
         return {'FINISHED'}
