@@ -25,6 +25,15 @@ bl_info = {
 }
 
 import bpy
+import importlib
+
+if 'add_rig' in globals():
+    importlib.reload(add_rig)
+    importlib.reload(generate_rig)
+    importlib.reload(panel)
+    importlib.reload(rename_vertex_groups)
+
+from . import add_rig, generate_rig, panel, rename_vertex_groups
 
 from .add_rig import RIGIFYFORMBLAB_OT_addrig
 from .generate_rig import RIGIFYFORMBLAB_OT_generaterig
