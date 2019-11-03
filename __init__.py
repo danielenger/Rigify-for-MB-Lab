@@ -19,7 +19,7 @@ bl_info = {
     "description": "Rigify for MB-Lab",
     "author": "Daniel Engler",
     "version": (0, 6, 1),
-    "blender": (2, 80, 0),
+    "blender": (2, 81, 0),
     "location": "View3D > Tools > Rigify for MB-Lab",
     "category": "Characters"
 }

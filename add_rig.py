@@ -44,34 +44,34 @@ def set_rigify_data(obj):
     for i in range(29):
         arm.rigify_layers.add()
 
-    arm.rigify_layers[0].name = "Fingers (IK)"
+    arm.rigify_layers[0].name = ""
     arm.rigify_layers[0].row = 1
     arm.rigify_layers[0].selset = False
     arm.rigify_layers[0].group = 0
-    arm.rigify_layers[1].name = "Fingers (Tweak)"
+    arm.rigify_layers[1].name = ""
     arm.rigify_layers[1].row = 1
     arm.rigify_layers[1].selset = False
     arm.rigify_layers[1].group = 0
-    arm.rigify_layers[2].name = " "
+    arm.rigify_layers[2].name = ""
     arm.rigify_layers[2].row = 1
     arm.rigify_layers[2].selset = False
     arm.rigify_layers[2].group = 0
     arm.rigify_layers[3].name = "Torso"
     arm.rigify_layers[3].row = 3
-    arm.rigify_layers[3].selset = False
+    arm.rigify_layers[3].selset = True
     arm.rigify_layers[3].group = 3
     arm.rigify_layers[4].name = "Torso (Tweak)"
     arm.rigify_layers[4].row = 4
     arm.rigify_layers[4].selset = False
     arm.rigify_layers[4].group = 4
-    arm.rigify_layers[5].name = " "
-    arm.rigify_layers[5].row = 1
-    arm.rigify_layers[5].selset = False
-    arm.rigify_layers[5].group = 0
-    arm.rigify_layers[6].name = " "
-    arm.rigify_layers[6].row = 1
+    arm.rigify_layers[5].name = "Fingers"
+    arm.rigify_layers[5].row = 5
+    arm.rigify_layers[5].selset = True
+    arm.rigify_layers[5].group = 6
+    arm.rigify_layers[6].name = "Fingers (Tweak)"
+    arm.rigify_layers[6].row = 6
     arm.rigify_layers[6].selset = False
-    arm.rigify_layers[6].group = 0
+    arm.rigify_layers[6].group = 5
     arm.rigify_layers[7].name = "Arm.L (IK)"
     arm.rigify_layers[7].row = 7
     arm.rigify_layers[7].selset = True
@@ -186,13 +186,10 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
     def set_layers(self, meta_rig):
         # bone names, left layer, right layer, left tweak layer, right
         # tweak layer, left fk layer, right fk_layer
-        db = [{'bname': ['thumb','index','middle','ring','pinky'],
+        db = [{'bname': {'%s%02d' % (n,i) for n in ['thumb','index','middle','ring','pinky'] for i in range(4)},
                 'layer_L': 5, 'layer_R': 5, 'tweak_L': 6, 'tweak_R': 6,
                 'fk_L': -1, 'fk_R': -1},
-                {'bname': ['hand'],
-                'layer_L': 7, 'layer_R': 10, 'tweak_L': -1, 'tweak_R': -1,
-                'fk_L': -1, 'fk_R': -1},
-                {'bname': ['lowerarm'],
+                {'bname': {'hand', 'lowerarm'},
                 'layer_L': 7, 'layer_R': 10, 'tweak_L': -1, 'tweak_R': -1,
                 'fk_L': -1, 'fk_R': -1},
                 {'bname': ['upperarm'],
@@ -205,33 +202,21 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
                 'layer_L': 3, 'layer_R': 3, 'tweak_L': -1, 'tweak_R': -1,
                 'fk_L': -1, 'fk_R': -1},
                 {'bname': ['pelvis'],
-                'layer_L': 3, 'layer_R': 3, 'tweak_L': -1, 'tweak_R': -1,
-                'fk_L': -1, 'fk_R': -1},
+                'layer_L': 3, 'layer_R': 3, 'tweak_L': 4, 'tweak_R': 4,
+                'fk_L': 4, 'fk_R': 4},
                 {'bname': ['thigh'],
                 'layer_L': 13, 'layer_R': 16, 'tweak_L': 15, 'tweak_R': 18,
                 'fk_L': 14, 'fk_R': 17},
-                {'bname': ['calf'],
-                'layer_L': 13, 'layer_R': 16, 'tweak_L': -1, 'tweak_R': -1,
-                'fk_L': -1, 'fk_R': -1},
-                {'bname': ['foot'],
-                'layer_L': 13, 'layer_R': 16, 'tweak_L': -1, 'tweak_R': -1,
-                'fk_L': -1, 'fk_R': -1},
-                {'bname': ['toes'],
+                {'bname': {'calf', 'foot', 'heel', 'toes'},
                 'layer_L': 13, 'layer_R': 16, 'tweak_L': -1, 'tweak_R': -1,
                 'fk_L': -1, 'fk_R': -1},
                 {'bname': ['head'],
                 'layer_L': 3, 'layer_R': 3, 'tweak_L': -1, 'tweak_R': -1,
                 'fk_L': -1, 'fk_R': -1},
                 {'bname': ['neck'],
-                'layer_L': 3, 'layer_R': 3, 'tweak_L': -1, 'tweak_R': -1,
+                'layer_L': 3, 'layer_R': 3, 'tweak_L': 4, 'tweak_R': 4,
                 'fk_L': -1, 'fk_R': -1},
-                {'bname': ['spine03'],
-                'layer_L': 3, 'layer_R': 3, 'tweak_L': -1, 'tweak_R': -1,
-                'fk_L': -1, 'fk_R': -1},
-                {'bname': ['spine02'],
-                'layer_L': 3, 'layer_R': 3, 'tweak_L': -1, 'tweak_R': -1,
-                'fk_L': -1, 'fk_R': -1},
-                {'bname': ['spine01'],
+                {'bname': {'spine01', 'spine02', 'spine03'},
                 'layer_L': 3, 'layer_R': 3, 'tweak_L': -1, 'tweak_R': -1,
                 'fk_L': -1, 'fk_R': -1}]
 
@@ -320,19 +305,30 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
         meta_rig.name = mblab_rig.name + "_metarig"
         bpy.ops.object.mode_set(mode='OBJECT')
 
-        # Delete IK and struct bones
-        if is_ik_rig:
-            bpy.ops.object.mode_set(mode='EDIT')
-            meta_rig.data.layers[0] = True
-            meta_rig.data.layers[1] = True
-            meta_rig.data.layers[2] = True
-            bpy.ops.armature.select_all(action='DESELECT')
+        # Delete unneeded bones
+        meta_rig.data.layers = [True for i in range(32)]
 
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.armature.select_all(action='DESELECT')
+
+        meta_rig.data.edit_bones['root'].select = True
+
+        if is_ik_rig:
+            # Delete IK and struct bones
             for bone_name, bone in meta_rig.data.edit_bones.items():
                 if "IK" in bone_name or "struct" in bone_name:
                     bone.select = True
-            bpy.ops.armature.delete()
 
+        if not is_muscle_rig:
+            # Delete twist bones
+            for bone_name, bone in meta_rig.data.edit_bones.items():
+                if "twist" in bone_name:
+                    bone.select = True
+
+        bpy.ops.armature.delete()
+
+        # Delete IK constraints
+        if is_ik_rig:
             bpy.ops.armature.select_all(action='SELECT')
             bpy.ops.armature.bone_layers(layers=(True, False, False, False, False, False, False, False, False, False, False, False, False, False,
                                                  False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False))
@@ -348,9 +344,8 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
                 if not ("rot_helper" in bone_name or "muscle" in bone_name):
                     for constraint in bone.constraints.values():
                         bone.constraints.remove(constraint)
-            
-            bpy.ops.object.mode_set(mode='OBJECT')
 
+        bpy.ops.object.mode_set(mode='OBJECT')
 
         # Fix dislocated joints in thigh and calf
         if is_muscle_rig:
@@ -463,18 +458,20 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
 
         # Connect spine with neck
         meta_rig.data.edit_bones['spine03'].tail = meta_rig.data.edit_bones['neck'].head.copy()
-        if not legacy_mode:
-            meta_rig.data.edit_bones['neck'].use_connect = True
 
-        # Legacy mode settings:
-        if legacy_mode:
-            
-            # legacy_mode finger roll
-            for ext in ["_L","_R"]:
-                for bone in meta_rig.data.edit_bones["hand" + ext].children_recursive:
+        # Resize hands and fix hand and finger roll
+        for ext in ["_L","_R"]:
+            hand_bone = meta_rig.data.edit_bones["hand" + ext]
+
+            hand_bone.length *= 2.25
+            hand_bone.roll += math.radians(90 if hand_bone.roll > 0 else -90)
+
+            for bone in hand_bone.children_recursive:
+                if 'muscle' not in bone.name:
                     bone.roll = bone.roll + math.pi
-        
-            # legacy_mode unparent "twist" bones
+
+        # legacy_mode unparent "twist" bones
+        if legacy_mode:
             for bone_name, bone in meta_rig.data.edit_bones.items():
                 if "twist" in bone_name:
                     bone.parent = None
@@ -511,7 +508,7 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
 
         # Inherit scale
         for bone in meta_rig.data.edit_bones.values():
-            bone.use_inherit_scale = True
+            bone.inherit_scale = 'FULL'
 
         # Unlock transforms
         for name, bone in meta_rig.pose.bones.items():
@@ -548,8 +545,9 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
 
         else:
 
-            meta_rig.pose.bones["pelvis"].rigify_type = "spines.super_spine"
-            meta_rig.pose.bones["pelvis"].rigify_parameters['neck_pos'] = 5
+            meta_rig.pose.bones["pelvis"].rigify_type = "spines.basic_spine"
+            meta_rig.pose.bones["neck"].rigify_type = "spines.super_head"
+            meta_rig.pose.bones["neck"].rigify_parameters.connect_chain = True
 
             for bone_name in ["clavicle_L", "clavicle_R", "breast_L", "breast_R"]:
                 meta_rig.pose.bones[bone_name].rigify_type = "basic.super_copy"
@@ -558,15 +556,14 @@ class RIGIFYFORMBLAB_OT_addrig(bpy.types.Operator):
 
             for ext in ["_L", "_R"]:
                 bone_name = 'thigh' + ext
-                meta_rig.pose.bones[bone_name].rigify_type = "limbs.super_limb"
-                meta_rig.pose.bones[bone_name].rigify_parameters.limb_type = 'leg'
+                meta_rig.pose.bones[bone_name].rigify_type = "limbs.leg"
                 meta_rig.pose.bones[bone_name].rigify_parameters.segments = limb_segments
                 meta_rig.pose.bones[bone_name].rigify_parameters.rotation_axis = 'x'
 
                 bone_name = 'upperarm' + ext
-                meta_rig.pose.bones[bone_name].rigify_type = "limbs.super_limb"
-                meta_rig.pose.bones[bone_name].rigify_parameters.limb_type = 'arm'
+                meta_rig.pose.bones[bone_name].rigify_type = "limbs.arm"
                 meta_rig.pose.bones[bone_name].rigify_parameters.segments = limb_segments
+                meta_rig.pose.bones[bone_name].rigify_parameters.rotation_axis = 'x'
 
                 meta_rig.pose.bones["index00" +
                                             ext].rigify_type = "limbs.super_palm"

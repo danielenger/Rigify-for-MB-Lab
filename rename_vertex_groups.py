@@ -4,13 +4,13 @@ import bpy
 mblab_base_bone_names = {  # mblab_bone : DEF-metarig_bone
     "upperarm_twist_L": "DEF-upperarm_L",
     "upperarm_L":       "DEF-upperarm_L.001",
-    "lowerarm_twist_L": "DEF-lowerarm_L",
-    "lowerarm_L":       "DEF-lowerarm_L.001",
+    "lowerarm_L":       "DEF-lowerarm_L",
+    "lowerarm_twist_L": "DEF-lowerarm_L.001",
 
     "upperarm_twist_R": "DEF-upperarm_R",
     "upperarm_R":       "DEF-upperarm_R.001",
-    "lowerarm_twist_R": "DEF-lowerarm_R",
-    "lowerarm_R":       "DEF-lowerarm_R.001",
+    "lowerarm_R":       "DEF-lowerarm_R",
+    "lowerarm_twist_R": "DEF-lowerarm_R.001",
 
     "thigh_twist_L": "DEF-thigh_L",
     "thigh_L":       "DEF-thigh_L.001",
