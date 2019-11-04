@@ -22,10 +22,10 @@ class RIGIFYFORMBLAB_PT_panel(bpy.types.Panel):
 
     def draw(self, context):
 
-        # legacy_mode = False
-        # addons = bpy.context.preferences.addons
-        # if "legacy_mode" in addons['rigify'].preferences:
-        #     legacy_mode = True if addons['rigify'].preferences['legacy_mode'] == 1 else False
+        legacy_mode = False
+        addons = bpy.context.preferences.addons
+        if "legacy_mode" in addons['rigify'].preferences:
+            legacy_mode = addons['rigify'].preferences['legacy_mode'] == 1
 
         col = self.layout.column()
 
@@ -33,7 +33,9 @@ class RIGIFYFORMBLAB_PT_panel(bpy.types.Panel):
             col.operator('object.rigifyformblab_enable_rigify')
         else:
             col.operator('object.rigifyformblab_addrig')
-            col.operator('object.rigifyformblab_generaterig')
+
+            if legacy_mode:
+                col.operator('object.rigifyformblab_generaterig')
 
             col.label(text="Rename Vertex Groups:")
             col.operator('object.rigifyformblab_rename_vertex_groups')
