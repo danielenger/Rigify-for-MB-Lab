@@ -19,21 +19,12 @@ bl_info = {
     "description": "Rigify for MB-Lab",
     "author": "Daniel Engler",
     "version": (0, 6, 1),
-    "blender": (2, 82, 0),
+    "blender": (2, 80, 0),
     "location": "View3D > Tools > Rigify for MB-Lab",
     "category": "Characters"
 }
 
 import bpy
-import importlib
-
-if 'add_rig' in globals():
-    importlib.reload(add_rig)
-    importlib.reload(generate_rig)
-    importlib.reload(panel)
-    importlib.reload(rename_vertex_groups)
-
-from . import add_rig, generate_rig, panel, rename_vertex_groups
 
 from .add_rig import RIGIFYFORMBLAB_OT_addrig
 from .generate_rig import RIGIFYFORMBLAB_OT_generaterig
