@@ -435,26 +435,23 @@ class RIGIFYFORMBLAB_OT_generaterig(bpy.types.Operator):
             if legacy_mode:
                 name = "knee_target.ik" + ext
             else:
-                name = "thigh" + ext + "_ik_target"
+                name = "thigh_ik_target" + ext
             rigify_rig.data.edit_bones[name].head.x = m[0]
             rigify_rig.data.edit_bones[name].tail.x = m[0]
             rigify_rig.data.edit_bones[name].head.z = m[2]
             rigify_rig.data.edit_bones[name].tail.z = m[2]
-        
         bpy.ops.object.mode_set(mode='POSE')
 
         # Set "DEF-spine03" B-Bone handle
         bpy.context.object.data.bones["DEF-spine03"].bbone_handle_type_end = 'ABSOLUTE'
         
         # Fix custom shape scale
-        if legacy_mode:        
-            rigify_rig.pose.bones["hand.ik_L"].custom_shape_scale = 2.5
-            rigify_rig.pose.bones["hand.ik_R"].custom_shape_scale = 2.5
-            rigify_rig.pose.bones["hand.fk_L"].custom_shape_scale = 2.5
-            rigify_rig.pose.bones["hand.fk_R"].custom_shape_scale = 2.5
-        else:
-            rigify_rig.pose.bones["hand_L_ik"].custom_shape_scale = 2.5
-            rigify_rig.pose.bones["hand_R_ik"].custom_shape_scale = 2.5
+        for ext in ["_L", "_R"]:
+            if legacy_mode:
+                rigify_rig.pose.bones["hand.ik" + ext].custom_shape_scale = 2.5
+                rigify_rig.pose.bones["hand.fk" + ext].custom_shape_scale = 2.5
+            else:
+                rigify_rig.pose.bones["hand_ik" + ext].custom_shape_scale = 2.5
 
         if is_muscle_rig:
             # clean extra bones left behind

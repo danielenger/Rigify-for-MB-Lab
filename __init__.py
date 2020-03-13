@@ -14,12 +14,18 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+
+# Thanks for help and support:
+# Amir https://github.com/amirpavlo
+# Alexander Gavrilov https://github.com/angavrilov
+
+
 bl_info = {
     "name": "Rigify for MB-Lab",
     "description": "Rigify for MB-Lab",
     "author": "Daniel Engler",
-    "version": (0, 6, 1),
-    "blender": (2, 80, 0),
+    "version": (0, 6, 2),
+    "blender": (2, 82, 0),
     "location": "View3D > Tools > Rigify for MB-Lab",
     "category": "Characters"
 }
